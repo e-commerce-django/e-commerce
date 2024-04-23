@@ -26,6 +26,10 @@ python, django, postgresql
 html, css, django-template
 
 
+# 개발 방법
+## branch 관리
+`issue` 생성 및 issue number로 branch 생성  
+
 # 실행 순서
 
 ## install requirements.txt 
