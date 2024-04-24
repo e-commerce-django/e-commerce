@@ -16,16 +16,18 @@ class User(models.Model):
 
 class Product(models.Model):
     seller = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE)
-    name = models.TextField()
+    name = models.CharField(max_length=100)
     description = models.TextField()
     image_url = models.TextField()
     min_bid_price = models.IntegerField()
-    max_bid_price = models.IntegerField()
     bid_increment = models.IntegerField()
     auction_start_time = models.DateTimeField()
     auction_end_time = models.DateTimeField()
     product_status = models.BooleanField()
     present_max_bid_price = models.IntegerField()
+    present_max_bidder_id = models.IntegerField()
+    category = models.CharField(max_length=30)
+    size = models.IntegerField()
 
     def __str__(self):
         return self.name
