@@ -1,3 +1,3 @@
 from django.shortcuts import render
-
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+from products.models import User, Product, Bid
