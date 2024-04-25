@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>상품 목록</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-  </form>
+  <!--위치 조정-->
+  <div style="margin-left: 300px; margin-top: 100px; margin-bottom: 200px;">
+    <h2>상품 등록하기</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Save</button>
+    </form>
+  </div>
 {% endblock %}

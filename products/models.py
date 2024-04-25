@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class User(models.Model):
     email = models.EmailField(max_length=200, unique=True)
@@ -15,7 +16,7 @@ class User(models.Model):
         db_table = 'user'
 
 class Product(models.Model):
-    seller = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE)
+    seller = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE, db_column='user_id', default=1)
     name = models.CharField(max_length=100)
     description = models.TextField()
     image_url = models.TextField()
@@ -23,11 +24,19 @@ class Product(models.Model):
     bid_increment = models.IntegerField()
     auction_start_time = models.DateTimeField()
     auction_end_time = models.DateTimeField()
-    product_status = models.BooleanField()
-    present_max_bid_price = models.IntegerField()
-    present_max_bidder_id = models.IntegerField()
+    product_status = models.BooleanField() # 상품이 현재 판매중이면 True 아니면 False
     category = models.CharField(max_length=30)
     size = models.IntegerField()
+    present_max_bid_price = models.IntegerField(default=None, null=True) # 나중에 입력받기 때문에 null 허용
+    present_max_bidder_id = models.IntegerField(default=None, null=True) # 나중에 입력받기 때문에 null 허용
+
+    def save(self, *args, **kwargs):# product_status 필드의 값을 설정
+        current_time = timezone.now()
+        if self.auction_start_time <= current_time <= self.auction_end_time:
+            self.product_status = True
+        else:
+            self.product_status = False
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
