@@ -1,13 +1,13 @@
 <div class="row">
   <div class="col-md-6">
       <div class="row">
-          {% for product in in_progress_sales %}
+          {% for object in completed_sales %}
               <div class="col-sm-6 col-md-4 mb-4">
                   <div class="card">
                       <a href="#">
-                          <img src="{{ product.image_url }}" class="card-img-top food-image" alt="{{ product.name }}">
+                          <img src="{{ object.image_url }}" class="card-img-top food-image" alt="{{ object.name }}">
                           <div class="card-body row">
-                              <h5 class="card-title">{{ product.name }}</h5>
+                              <h5 class="card-title">{{ object.name }}</h5>
                              
                           </div>
                       </a>
