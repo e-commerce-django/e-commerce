@@ -12,7 +12,7 @@
             <a class="nav-link" href="#">Auction</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'product_registrater' %}">Registration</a>
+            <a class="nav-link" href="{% url 'products:product_registrater' %}">Registration</a>
           </li>
           <!-- 사용자 인증 여부에 따라 로그인/회원가입 또는 마이페이지/로그아웃 버튼 표시 -->
           {% if user.is_authenticated %}

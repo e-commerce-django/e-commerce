@@ -16,7 +16,7 @@ class User(models.Model):
         db_table = 'user'
 
 class Product(models.Model):
-    seller = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE, db_column='user_id', default=1)
+    seller = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE, db_column='seller_id')
     name = models.CharField(max_length=100)
     description = models.TextField()
     image_url = models.TextField()
