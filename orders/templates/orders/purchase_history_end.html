@@ -1,12 +1,7 @@
-{% extends 'base.html' %}
-
-{% block content %}
-
 <div class="row">
     <div class="col-md-6">
-        <h3>구매 내역</h3>
         <div class="row">
-            {% for object in object_list %}
+            {% for object in completed_sales %}
                 <div class="col-sm-6 col-md-4 mb-4">
                     <div class="card">
                         <a href="#">
@@ -22,4 +17,3 @@
         </div>
     </div>
 </div>
-{% endblock %}
