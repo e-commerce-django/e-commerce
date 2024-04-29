@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from products.models import User, Product, Bid
+from django.views.generic import ListView
+
 
 @login_required
 def purchase_history(request):
@@ -45,7 +47,7 @@ def purchase_history_end(request):
 @login_required
 def sales_history(request):
     # 진행 중인 상품의 개수 계산
-    in_progress_count = Product.objects.filter(seller=request.user, product_status=True).count()
+    in_progress_count = Product.objects.filter(seller=request.user, product_status=True).count()      # seller -> seller_id???
     # 종료된 상품의 개수 계산
     end_count = Product.objects.filter(seller=request.user, product_status=False).count()
     context = {
@@ -72,3 +74,26 @@ def sales_history_end(request):
         'completed_sales': completed_sales
     }
     return render(request, 'orders/sales_history_end.html', context)
+
+
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'orders/auction_page.html'
+    context_object_name = 'products'
+    paginate_by = 10  # 페이지네이션 적용할 경우
+
+
+
+def auction_catetory(request, category=None):
+    # 모든 상품을 가져오는 기본 쿼리셋
+    products = Product.objects.all()
+
+    # 카테고리가 지정되었다면 해당 카테고리의 상품만 필터링
+    if category:
+        products = products.filter(category=category)
+
+    context = {
+        'products': products
+    }
+    return render(request, 'orders/auction_page.html', context)
