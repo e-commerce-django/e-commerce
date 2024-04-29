@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- 배너 섹션 -->
+<section class="banner">
+  <div class="container text-center">
+      <img src="{% static 'images/logo.png' %}" alt="Banner Image">
+      <!-- 배너 내용 추가 -->
+  </div>
+</section>
+
+
+<div class="container">
+    <!-- 인기 상품 섹션 -->
+    <section class="popular-products">
+        <h2>인기 상품</h2>
+        <div class="row">
+            {% for product in object_list|slice:":3" %}
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary">자세히 보기</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="#" class="btn btn-outline-primary mt-3">더 보기</a>
+    </section>
+
+    <hr>
+
+    <!-- 스니커즈 섹션 -->
+    <section class="sneakers">
+        <h2>스니커즈</h2>
+        <div class="row">
+            {% for product in sneakers %}
+            <!-- 각 상품 표시 -->
+            </div>
+            {% endfor %}
+        </div>
+        <a href="#" class="btn btn-outline-primary mt-3">더 보기</a>
+    </section>
+
+    <hr>
+
+    <!-- 단화 섹션 -->
+    <section class="flats">
+        <h2>단화</h2>
+        <div class="row">
+            {% for product in flats %}
+            <!-- 각 상품 표시 -->
+            </div>
+            {% endfor %}
+        </div>
+        <a href="#" class="btn btn-outline-primary mt-3">더 보기</a>
+    </section>
+</div>
+{% endblock %}
+
