@@ -5,8 +5,8 @@ from django.forms import IntegerField, TextInput
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['name', 'email', 'phone_number', 'user_type']
-    search_fields = ['name', 'email']
+    list_display = ['username', 'email', 'phone_number', 'user_type']
+    search_fields = ['username', 'email']
     list_filter = ['user_type']
 
 @admin.register(Product)
