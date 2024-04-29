@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex;">
+  <!-- 좌측 네비게이션 바 -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="width: 200px; height: 100vh; flex-shrink: 0;">
+    <ul class="navbar-nav" style="color: white; flex-direction: column;">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_page' %}" style="color: white;">All</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='스니커즈' %}" style="color: white;">스니커즈</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='운동화' %}" style="color: white;">운동화</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='구두' %}" style="color: white;">구두</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='부츠' %}" style="color: white;">부츠</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='플랫슈즈' %}" style="color: white;">플랫슈즈</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='로퍼' %}" style="color: white;">로퍼</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='샌들' %}" style="color: white;">샌들</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='슬리퍼' %}" style="color: white;">슬리퍼</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'orders:auction_category_page' category='기타 신발' %}" style="color: white;">기타 신발</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- 상품 목록 -->
+  <div class="product-list" style="text-align: center; margin-left: 20px;">
+    {% for product in products %}
+      <div class="product-item" style="display: inline-block; margin: 20px;">
+        <a href="{% url 'products:product_detail' pk=product.pk %}">
+          <img src="{{ product.image_url }}" alt="{{ product.name }}">
+          <h3>{{ product.name }}</h3>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

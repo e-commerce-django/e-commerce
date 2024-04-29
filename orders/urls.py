@@ -16,4 +16,6 @@ urlpatterns = [
     path('sales_history/ing/', views.sales_history_ing, name='sales_history_ing'),
     path('sales_history/end/', views.sales_history_end, name='sales_history_end'),
     path('bid_participation/<int:pk>/', views.bid_participation, name='bid_participation'),
+    path('auction/', views.ProductListView.as_view(), name='auction_page'),
+    path('auction/<str:category>/', views.auction_catetory, name='auction_category_page'),
 ]
