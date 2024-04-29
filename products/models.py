@@ -1,19 +1,7 @@
 from django.db import models
 from django.utils import timezone
-
-class User(models.Model):
-    email = models.EmailField(max_length=200, unique=True)
-    password = models.TextField()
-    name = models.CharField(max_length=40)
-    address = models.CharField(max_length=200)
-    phone_number = models.CharField(max_length=20)
-    user_type = models.BooleanField()
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'user'
+from django.contrib.auth.hashers import make_password
+from accounts.models import User
 
 class Product(models.Model):
     seller = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE, db_column='seller_id')
