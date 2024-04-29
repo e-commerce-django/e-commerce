@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
 from products.models import Product, Bid
+from django.views.generic import ListView
 
 # 구매 - purchase
 # @login_required
@@ -99,12 +100,12 @@ def bid_participation(request, pk):
 
     return redirect('orders:purchase_history')
 
+
 class ProductListView(ListView):
     model = Product
     template_name = 'orders/auction_page.html'
     context_object_name = 'products'
     paginate_by = 10  # 페이지네이션 적용할 경우
-
 
 
 def auction_catetory(request, category=None):
