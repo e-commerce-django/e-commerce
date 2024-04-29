@@ -1,5 +1,6 @@
-<!-- registration.html -->
+{% extends "base.html" %}
 
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,44 +12,9 @@
     <h1>회원가입</h1>
     <form action="{% url 'register' %}" method="POST">
         {% csrf_token %}
-        <label for="email">이메일:</label><br>
-        <input type="email" id="email" name="email" required><br>
-        <button type="button" onclick="sendVerification()">이메일 인증</button><br><br>
-        
-        <label for="password">비밀번호:</label><br>
-        <input type="password" id="password" name="password" required><br>
-        
-        <label for="confirm_password">비밀번호 확인:</label><br>
-        <input type="password" id="confirm_password" name="confirm_password" required oninput="checkPassword()"><br><br>
-        
-        <label for="name">이름:</label><br>
-        <input type="text" id="name" name="name" required><br>
-        
-        <label for="phone">전화번호:</label><br>
-        <input type="tel" id="phone" name="phone" required><br>
-        
-        <label for="address">주소:</label><br>
-        <input type="text" id="address" name="address" required><br><br>
-        
+        {{ form.as_p }}
         <button type="submit">회원 가입</button>
     </form>
-
-    <script>
-        function sendVerification() {
-            // 이메일 인증 코드를 보내는 로직을 여기에 추가
-            alert("이메일 인증 코드를 전송했습니다.");
-        }
-
-        function checkPassword() {
-            var password = document.getElementById('password').value;
-            var confirm_password = document.getElementById('confirm_password').value;
-
-            if (password != confirm_password) {
-                document.getElementById('confirm_password').setCustomValidity("비밀번호가 일치하지 않습니다.");
-            } else {
-                document.getElementById('confirm_password').setCustomValidity('');
-            }
-        }
-    </script>
 </body>
 </html>
+{% endblock %}
