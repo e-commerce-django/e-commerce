@@ -78,17 +78,17 @@ def sales_history_end(request):
     return render(request, 'orders/sales_history_end.html', context)
 
 # 입찰 참여
-# @login_required
+@login_required
 def bid_participation(request, pk):
     product = get_object_or_404(Product, pk=pk)
-
+    
     if request.method == 'POST':
         price_str = request.POST.get('price')
         
-       # 가격 입력값이 비어있지 않은지 확인
+        # 가격 입력값이 비어있지 않은지 확인
         if price_str.strip():
             price = int(price_str)
-
+            
             # present_max_bid_price가 None이면 min_bid_price를 사용
             current_max_bid = product.present_max_bid_price or product.min_bid_price
 
@@ -106,15 +106,13 @@ def bid_participation(request, pk):
             messages.error(request, '유효한 입찰가를 입력해주세요.')
 
         return redirect('orders:purchase_history')
-
+    
     context = {
         'product': product
     }
     return render(request, 'orders/bid_participation_form.html', context)
 
 
-# 상품 auction 페이지에 나열
-# @login_required
 class ProductListView(ListView):
     model = Product
     template_name = 'orders/auction_page.html'
