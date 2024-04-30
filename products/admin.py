@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.db import models
-from .models import User, Product, Bid
+from .models import Product, Bid
+from accounts.models import User
 from django.forms import IntegerField, TextInput
 
 @admin.register(User)
