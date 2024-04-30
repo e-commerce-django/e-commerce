@@ -17,17 +17,17 @@
           <!-- 사용자 인증 여부에 따라 로그인/회원가입 또는 마이페이지/로그아웃 버튼 표시 -->
           {% if user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="#">My Page</a>
+                <a class="nav-link" href="/accounts/mypage/">My Page</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Logout</a>
+                <a class="nav-link" href="/accounts/logout/">Logout</a>
               </li>
           {% else %}
               <li class="nav-item">
-                <a class="nav-link" href="#">Login</a>
+                <a class="nav-link" href="/accounts/login/">Login</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Join</a>
+                <a class="nav-link" href="/accounts/register/">Join</a>
               </li>
           {% endif %}
       </ul>
