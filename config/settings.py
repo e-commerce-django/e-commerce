@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "products",
     "widget_tweaks",
     "django_extensions",
+    "django_session_timeout",
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
