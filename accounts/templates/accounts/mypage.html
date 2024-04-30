@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: center;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 8px 16px; /* 수정된 부분 */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to My Page</h1>
+        
+        <div style="text-align: center;">
+            <h2>회원 정보</h2>
+            <p>이름: {{ user.username }}</p>
+            <p>이메일: {{ user.email }}</p>
+            <p>주소: {{ user.address }}</p>
+            <p>전화번호: {{ user.phone_number }}</p>
+        </div>
+
+        <h2>회원 관리</h2>
+        <form action="/accounts/mypage/myinfo_modify/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="회원 정보 수정">
+        </form>
+        <br>
+        <form action="/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="회원 탈퇴">
+        </form>
+        <br>
+
+        <h2>상품 관리 내역</h2>
+        <form action="/" method="post">
+            {% csrf_token %}
+            <input type="submit" value="상품 관리 내역 보기">
+        </form>
+    </div>
+</body>
+</html>
+{% endblock %}
