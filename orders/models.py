@@ -1,2 +1,3 @@
 from django.db import models
-from products.models import User, Product, Bid
+from products.models import Product, Bid
+from accounts.models import User

@@ -38,16 +38,32 @@
     </ul>
   </nav>
 
-  <!-- 상품 목록 -->
-  <div class="product-list" style="text-align: center; margin-left: 20px;">
-    {% for product in products %}
+  <!-- 상품 목록과 정렬 버튼을 담을 div -->
+  <div style="flex-grow: 1; margin-left: 20px;">
+
+    <!-- 카테고리명 또는 "All" 문구 -->
+    <div style="text-align: center; margin-top: 20px;">
+      <h3>{{ category }}</h3>
+    </div>
+
+    <!-- 정렬 버튼 -->
+    <div style="text-align: right; margin-bottom: 20px;">
+      <button class="btn btn-primary me-2" onclick="location.href='{{ request.path }}?sort=latest'">최신순</button>
+      <button class="btn btn-primary" onclick="location.href='{{ request.path }}?sort=ending_soon'">마감임박순</button>
+    </div>
+
+    <!-- 상품 목록 -->
+    <div class="product-list" style="text-align: center;">
+      {% for product in products %}
       <div class="product-item" style="display: inline-block; margin: 20px;">
         <a href="{% url 'products:product_detail' pk=product.pk %}">
           <img src="{{ product.image_url }}" alt="{{ product.name }}">
           <h3>{{ product.name }}</h3>
         </a>
       </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
+  
 </div>
 {% endblock %}
