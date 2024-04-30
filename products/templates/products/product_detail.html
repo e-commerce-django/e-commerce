@@ -4,18 +4,21 @@
 <!-- 위치 조정 -->
 <div style="margin-left: 300px; margin-top: 100px; margin-bottom: 200px;">
     <h1>{{ product.name }}</h1>
-    <p>{{ product.description }}</p>
     <img src="{{ product.image_url }}" alt="Product Image">
-    <p>Category: {{ product.category }}</p>
-    <p>Size: {{ product.size }}</p>
-    <p>Minimum Bid Price: {{ product.min_bid_price }}₩</p>
-    <p>Auction Starts: {{ product.auction_start_time }}</p>
-    <p>Auction Ends: {{ product.auction_end_time }}</p>
+    <p>카테고리: {{ product.category }}</p>
+    <p>사이즈: {{ product.size }}</p>
+    <p>판매자 최소 입찰가: {{ product.min_bid_price }}₩</p>
+    <p>경매 시작일: {{ product.auction_start_time }}</p>
+    <p>경매 종료일: {{ product.auction_end_time }}</p>
+    <p>현재 최대 입찰가: {{ product.present_max_bid_price }}</p>
+    <p>입찰 단위: {{ product.bid_increment }}</p>
     {% if product.product_status %}
       <p id="time-remaining">남은 시간: 계산 중...</p>
+      <a href="{% url 'orders:bid_participation' pk=product.id %}" class="btn btn-primary">입찰 참여하기</a>
     {% else %}
       <p>Auction has ended</p>
     {% endif %}
+    <p>상품 설명: {{ product.description }}</p>
 </div>
 <script>
 // 카운트다운 할 날짜 설정

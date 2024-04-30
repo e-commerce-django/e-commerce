@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
 from products.models import Product, Bid
 from django.views.generic import ListView
+from django.contrib import messages
 
 # 구매 - purchase
 # @login_required
@@ -75,30 +76,43 @@ def sales_history_end(request):
         'completed_sales': completed_sales
     }
     return render(request, 'orders/sales_history_end.html', context)
-# 입찰 참여
-# @login_required
-def bid_participation(request, pk):
-    # get
-    if request.method=='GET':
-        product = Product.objects.filter(id=pk)
-        context = {
-        'product': product
-        }
-        return render(request, 'orders/bid_participation_form.html', context)
-    # post
-    elif request.method=="POST":
-        # 폼에서 전달되는 각 값을 뽑아와서 DB에 저장
-        user = request.user
-        seller = request.POST['seller']
-        product = request.POST['product']
-        price = request.POST['price']
-        
-        # product 테이블의 present_max_bid_price과 present_max_bidder_id 값 갱신
-        new_bider = Product.objects.get(seller = seller, name = product)
-        new_bider(present_max_bid_price = price, present_max_bidder_id = user)
-        new_bider.save()    
 
-    return redirect('orders:purchase_history')
+# 입찰 참여
+@login_required
+def bid_participation(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    
+    if request.method == 'POST':
+        price_str = request.POST.get('price')
+        
+        # 가격 입력값이 비어있지 않은지 확인
+        if price_str.strip():
+            price = int(price_str)
+            
+            # present_max_bid_price가 None이면 min_bid_price를 사용
+            current_max_bid = product.present_max_bid_price or product.min_bid_price
+
+            if price > current_max_bid:
+                if (price - current_max_bid) % product.bid_increment == 0:
+                    product.present_max_bid_price = price
+                    product.present_max_bidder_id = request.user.id
+                    product.save()
+                    messages.success(request, '성공적으로 입찰하였습니다.')
+                else:
+                    messages.error(request, f'입찰 금액은 {product.bid_increment}원 단위로 증가해야 합니다.')
+            else:
+                messages.error(request, '최소입찰가보다 더 높은 가격에 입찰하여야합니다.')
+        else:
+            messages.error(request, '유효한 입찰가를 입력해주세요.')
+
+        return redirect('orders:purchase_history')
+    
+    context = {
+        'product': product
+    }
+    return render(request, 'orders/bid_participation_form.html', context)
+
+
 
 
 class ProductListView(ListView):

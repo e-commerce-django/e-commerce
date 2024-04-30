@@ -18,15 +18,15 @@ class ProductForm(forms.ModelForm):
     ]
     # 카테고리 선택박스
     CATEGORY_CHOICES = [
-        ('sneakers', '스니커즈'),
-        ('athletic_shoes', '운동화'),
-        ('dress_shoes', '구두'),
-        ('boots', '부츠'),
-        ('flat_shoes', '플렛 슈즈'),
-        ('loafers', '로퍼'),
-        ('sandals', '샌들'),
-        ('slippers', '슬리퍼'),
-        ('other', '기타 신발'),
+        ('스니커즈', '스니커즈'),
+        ('운동화', '운동화'),
+        ('구두', '구두'),
+        ('부츠', '부츠'),
+        ('플렛 슈즈', '플렛 슈즈'),
+        ('로퍼', '로퍼'),
+        ('샌들', '샌들'),
+        ('슬리퍼', '슬리퍼'),
+        ('기타 신발', '기타 신발'),
     ]
     # 사이즈 선택박스
     SIZE_CHOICES = [(size, str(size)) for size in range(210, 301, 5)]
@@ -54,11 +54,11 @@ class ProductForm(forms.ModelForm):
             'auction_end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
 
-        def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
             self.seller = kwargs.pop('seller', None)  # seller를 인자로 받음
             super().__init__(*args, **kwargs)
 
-        def save(self, commit=True):
+    def save(self, commit=True):
             instance = super().save(commit=False)
             if self.seller:
                 instance.seller = self.seller  # 폼 생성 시 seller 설정
