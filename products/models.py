@@ -41,6 +41,9 @@ class Bid(models.Model):
     bid_time = models.DateTimeField()
 
     def __str__(self):
+        return self.product
+
+    def __repr__(self):
         return f"{self.bidder.name} - {self.bid_price}"
 
     class Meta:

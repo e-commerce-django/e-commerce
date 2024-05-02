@@ -39,9 +39,11 @@ def purchase_history_ing_detail(request, pk):
 # @login_required
 def purchase_history_end_detail(request, pk):
     product = Product.objects.get(pk=pk)
-    bid_product = product.bids_set.get(product = product)
+    product_name = get_object_or_404(Product, pk=pk).name
+    # bid_product = product.bid_set.get(product = product)
+    fin_bidder=Bid.objects.get(product=product_name).bidder
     user = request.user
-    if bid_product == user:
+    if fin_bidder == user:
         users_bid_result = '입찰에 성공하셨습니다.'
     else:
         users_bid_result = '입찰에 실패하셨습니다.'
