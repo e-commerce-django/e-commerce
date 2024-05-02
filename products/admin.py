@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models
-from .models import Product, Bid
+from .models import Product, Bid, Bidder
 from accounts.models import User
 from django.forms import IntegerField, TextInput
 
@@ -33,3 +33,11 @@ class BidAdmin(admin.ModelAdmin):
     list_filter = ['bid_result', 'bid_time']
     date_hierarchy = 'bid_time'
     raw_id_fields = ['bidder', 'product'] # 검색을 위한 추가
+
+@admin.register(Bidder)
+class BidderAdmin(admin.ModelAdmin):
+    list_display = ['bidder', 'product_id', 'bid_price', 'bid_time']
+    search_fields = ['bidder__username', 'product_id__name', 'bid_price']
+    list_filter = ['bid_time']
+    date_hierarchy = 'bid_time'
+    raw_id_fields = ['bidder', 'product_id']
