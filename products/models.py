@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 from accounts.models import User
+from django.conf import settings
 
 class Product(models.Model):
     seller = models.ForeignKey(User, related_name='products', on_delete=models.CASCADE, db_column='seller_id')
@@ -44,3 +45,10 @@ class Bid(models.Model):
 
     class Meta:
         db_table = 'bid'
+
+
+class Bidder(models.Model):
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='bidder_product_id')
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE)
+    bid_price = models.DecimalField(max_digits=20, decimal_places=2)
+    bid_time = models.DateTimeField(auto_now_add=True)

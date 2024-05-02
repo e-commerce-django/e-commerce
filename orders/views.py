@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
-from products.models import Product, Bid
+from products.models import Product, Bidder
 from django.views.generic import ListView
 from django.contrib import messages
 
@@ -97,6 +97,15 @@ def bid_participation(request, pk):
                     product.present_max_bid_price = price
                     product.present_max_bidder_id = request.user.id
                     product.save()
+
+                    # Bidder 인스턴스 생성 및 저장
+                    bidder = Bidder(
+                        product_id=product,  # 외래키 연결
+                        bidder=request.user,  # 현재 로그인한 사용자
+                        bid_price=price  # 입찰 가격
+                    )
+                    bidder.save()  # 데이터베이스에 저장
+                    
                     messages.success(request, '성공적으로 입찰하였습니다.')
                 else:
                     messages.error(request, f'입찰 금액은 {product.bid_increment}원 단위로 증가해야 합니다.')
@@ -111,6 +120,7 @@ def bid_participation(request, pk):
         'product': product
     }
     return render(request, 'orders/bid_participation_form.html', context)
+
 
 
 class ProductListView(ListView):
