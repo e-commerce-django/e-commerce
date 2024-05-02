@@ -57,8 +57,6 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to My Page</h1>
-        
         <div style="text-align: center;">
             <h2>회원 정보</h2>
             <p>이름: {{ user.username }}</p>
@@ -73,11 +71,14 @@
             <input type="submit" value="회원 정보 수정">
         </form>
         <br>
-        <form action="/" method="post">
-            {% csrf_token %}
-            <input type="submit" value="회원 탈퇴">
-        </form>
-        <br>
+
+        <div>
+            <form action="/" method="post">
+                {% csrf_token %}
+                <input type="submit" value="회원 탈퇴" id="delete-user-btn">
+            </form>
+            <br>
+        </div>
 
         <h2>상품 관리 내역</h2>
         <form action="/" method="post">
@@ -87,4 +88,27 @@
     </div>
 </body>
 </html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('delete-user-btn').addEventListener('click', function () {
+            if (confirm("정말로 회원 탈퇴하시겠습니까?")) {
+                // 확인을 누르면 AJAX 요청 수행
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "{% url 'withdraw' %}", true);
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert("회원 탈퇴가 완료되었습니다.");
+                        // 회원 탈퇴 후 리다이렉트 등 필요한 동작 수행
+                    } else {
+                        alert("오류가 발생했습니다.");
+                    }
+                };
+                xhr.send();
+            }
+        });
+    });
+</script>
+
 {% endblock %}

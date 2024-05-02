@@ -1,12 +1,82 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>로그인</h1>
-<form action="{% url 'login' %}" method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">로그인</button>
-</form>
-</form>
-<p>계정이 없으신가요? <a href="{% url 'register' %}">회원가입</a></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            text-align: center;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        p {
+            text-align: center;
+            margin-top: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>로그인</h1>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <input type="email" name="email" placeholder="이메일 주소" required>
+            <input type="password" name="password" placeholder="비밀번호" required>
+            <button type="submit">로그인</button>
+        </form>
+        <p>계정이 없으신가요? <a href="{% url 'register' %}">회원가입</a></p>
+    </div>
+</body>
+</html>
 {% endblock %}
