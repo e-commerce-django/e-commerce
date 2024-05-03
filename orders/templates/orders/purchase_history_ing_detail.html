@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- 위치 조정 -->
+<div style="margin-left: 300px; margin-top: 100px; margin-bottom: 200px;">
+    <h3>{{ request.user.username }}님이 구매 중인 {{ product.name }}의 페이지 입니다. </h3>
+    <h1>{{ product.name }}</h1>
+    <img src="{{ product.image_url }}" alt="Product Image">
+    <p>카테고리: {{ product.category }}</p>
+    <p>사이즈: {{ product.size }}</p>
+    <p>판매자 최소 입찰가: {{ product.min_bid_price }}₩</p>
+    <p>경매 시작일: {{ product.auction_start_time }}</p>
+    <p>경매 종료일: {{ product.auction_end_time }}</p>
+    <p>현재 최대 입찰가: {{ product.present_max_bid_price }}</p>
+    <p>입찰 단위: {{ product.bid_increment }}</p>
+    <p id="time-remaining">남은 시간: 계산 중...</p>
+    <p>상품 설명: {{ product.description }}</p>
+
+        <!-- 구매 상품 목록으로 돌아가는 버튼 -->
+        <form action="{% url 'orders:purchase_history' %}" method="post">
+          {% csrf_token %}
+           <input type="submit" value="구매상품 목록으로">
+        </form>
+</div>
+<script>
+// 카운트다운 할 날짜 설정
+var countDownDate = new Date("{{ product.auction_end_time|date:'Y/m/d H:i:s' }}").getTime();
+
+
+// 1초마다 카운트 다운 업데이트
+var countdownfunction = setInterval(function() {
+
+    // 현재 날짜와 시간 가져오기
+    var now = new Date().getTime();
+
+    // 남은 시간 계산하기
+    var timeRemaining = countDownDate - now;
+
+    // 날짜, 시간, 분, 초 단위로 시간 계산
+    var days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+    // id="time-remaining"인 요소에 결과 출력
+    document.getElementById("time-remaining").innerHTML = "남은 시간: " + days + "일 " + hours + "시간 "
+    + minutes + "분 " + seconds + "초 ";
+
+    // 카운트 다운이 끝나면 텍스트 출력
+    if (timeRemaining < 0) {
+        clearInterval(countdownfunction);
+        document.getElementById("time-remaining").innerHTML = "경매가 종료되었습니다";
+    }
+}, 1000);
+</script>
+{% endblock %}

@@ -24,7 +24,7 @@
 </style>
 
 <div id="sales-header">
-    <h2>판매 내역</h2>
+    <h2>{{ request.user.username }} 님의 판매 내역</h2>
 </div>
 
 <div id="sales-buttons">
@@ -33,15 +33,15 @@
 </div>
 
 <div id="sales-container">
-    <div id="in-progress-sales" class="sales">
-        <h3>진행 중</h3>
-        {% include 'orders/sales_history_ing.html' %}
-    </div>
+  <div id="in-progress-sales" class="sales">
+      <h3>진행 중</h3>
+      {% include 'orders/sales_history_ing.html' %}
+  </div>
 
-    <div id="completed-sales" class="sales" style="display: none;">
-        <h3>진행 종료</h3>
-        {% include 'orders/sales_history_end.html' %}
-    </div>
+  <div id="completed-sales" class="sales" style="display: none;">
+      <h3>진행 종료</h3>
+      {% include 'orders/sales_history_end.html' %}
+  </div>
 </div>
 
 <script>

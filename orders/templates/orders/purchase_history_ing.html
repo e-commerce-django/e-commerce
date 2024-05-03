@@ -1,14 +1,21 @@
+{% block content %}
+<style>
+    a {
+        text-decoration-line: none;
+        color: inherit;
+    }
+</style>
+{% if in_progress_sales %}
 <div class="row">
   <div class="col-md-6">
       <div class="row">
           {% for product in in_progress_sales %}
               <div class="col-sm-6 col-md-4 mb-4">
                   <div class="card">
-                      <a href="#">
+                      <a href="{% url 'orders:purchase_history_ing_detail' product.id %}">
                           <img src="{{ product.image_url }}" class="card-img-top food-image" alt="{{ product.name }}">
                           <div class="card-body row">
-                              <h5 class="card-title">{{ product.name }}</h5>
-                             
+                              <h5 class="card-title">{{ product.name }}</h5> 
                           </div>
                       </a>
                   </div>
@@ -17,3 +24,7 @@
       </div>
   </div>
 </div>
+{% else %}
+    <p>진행 중인 상품이 없습니다.</p>
+{% endif %}
+{% endblock %}
