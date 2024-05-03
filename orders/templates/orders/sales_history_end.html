@@ -1,10 +1,18 @@
+{% block content %}
+<style>
+    a {
+        text-decoration-line: none;
+        color: inherit;
+    }
+</style>
+{% if completed_sales %}
 <div class="row">
   <div class="col-md-6">
       <div class="row">
           {% for object in completed_sales %}
               <div class="col-sm-6 col-md-4 mb-4">
                   <div class="card">
-                      <a href="#">
+                      <a href="{% url 'orders:sales_history_end_detail' object.id %}">
                           <img src="{{ object.image_url }}" class="card-img-top food-image" alt="{{ object.name }}">
                           <div class="card-body row">
                               <h5 class="card-title">{{ object.name }}</h5>
@@ -17,3 +25,7 @@
       </div>
   </div>
 </div>
+{% else %}
+    <p>판매내역 중 진행이 완료된 상품이 없습니다.</p>
+{% endif %}
+{% endblock %}

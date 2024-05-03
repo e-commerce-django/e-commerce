@@ -81,10 +81,14 @@
         </div>
 
         <h2>상품 관리 내역</h2>
-        <form action="/" method="post">
+        <form action="{% url 'orders:sales_history' %}" method="post">
             {% csrf_token %}
-            <input type="submit" value="상품 관리 내역 보기">
+            <input type="submit" value="판매 내역 보기">
         </form>
+        <form action="{% url 'orders:purchase_history' %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="구매 내역 보기">
+      </form>
     </div>
 </body>
 </html>
