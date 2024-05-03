@@ -37,3 +37,7 @@ html, css, django-template
 $ pip install -r requirements.txt
 ```
 - `requirements.txt` 파일에 명시된 라이브러리를 설치합니다.  
+
+# Pear Review
+좋은 의견 부탁드립니다.  
+
