@@ -40,8 +40,9 @@ class Bid(models.Model):
     bid_price = models.IntegerField()
     bid_time = models.DateTimeField()
 
-    def __str__(self):
-        return self.product
+    # 변화된 코드가 반영이 안되는 오류 발생 -> 일단, 주석으로 처리
+    # def __str__(self):
+    #     return self.product
 
     def __repr__(self):
         return f"{self.bidder.name} - {self.bid_price}"

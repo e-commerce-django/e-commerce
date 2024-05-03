@@ -36,19 +36,25 @@ def purchase_history_ing_detail(request, pk):
     }
     return render(request, 'orders/purchase_history_ing_detail.html', context)
 
+fin_bidder = None
 # @login_required
 def purchase_history_end_detail(request, pk):
     product = Product.objects.get(pk=pk)
     product_name = get_object_or_404(Product, pk=pk).name
-    # bid_product = product.bid_set.get(product = product)
-    fin_bidder=Bid.objects.get(product=product_name).bidder
+    # bid 모델 변화 반영 후 수정 예정 (여기 부터)
+    bid_list=list(Bid.objects.values())
+    for bid in bid_list:
+        if bid['product'] == product_name:
+            global fin_bidder 
+            fin_bidder = bid['bidder']
+            return fin_bidder
+    # 여기 까지
     user = request.user
     if fin_bidder == user:
         users_bid_result = '입찰에 성공하셨습니다.'
     else:
         users_bid_result = '입찰에 실패하셨습니다.'
     context = {
-        'user' : user,
         'product' : product,
         'users_bid_result' : users_bid_result
     }
