@@ -3,27 +3,34 @@
 {% block content %}
 <!-- 위치 조정 -->
 <div style="margin-left: 300px; margin-top: 100px; margin-bottom: 200px;">
-    <h1>{{ product.name }}</h1>
+    <!-- 상품 정보 출력 -->
+    <h3>{{ request.user.username }}님이 판매 중인 {{ product.name }}의 관리페이지 입니다. </h3>
     <img src="{{ product.image_url }}" alt="Product Image">
     <p>카테고리: {{ product.category }}</p>
     <p>사이즈: {{ product.size }}</p>
-    <p>판매자 최소 입찰가: {{ product.min_bid_price }}₩</p>
+    <p>입력하신 최소 입찰가: {{ product.min_bid_price }}₩</p>
     <p>경매 시작일: {{ product.auction_start_time }}</p>
     <p>경매 종료일: {{ product.auction_end_time }}</p>
     <p>현재 최대 입찰가: {{ product.present_max_bid_price }}</p>
     <p>입찰 단위: {{ product.bid_increment }}</p>
-    {% if product.product_status %}
-      <p id="time-remaining">남은 시간: 계산 중...</p>
-      <a href="{% url 'orders:bid_participation' pk=product.id %}" class="btn btn-primary">입찰 참여하기</a>
-      {% else %}
-        {% if auction_has_not_started %}
-            <p>아직 경매 기간이 아닙니다.</p>
-        {% elif auction_has_ended %}
-            <p>경매 기간이 종료되었습니다.</p>
-      {% endif %}
-    {% endif %}
+    <p id="time-remaining">남은 시간: 계산 중...</p>
     <p>상품 설명: {{ product.description }}</p>
+
+
+    <!-- 강제 판매 종료 버튼 -->
+        <form action="{% url 'orders:force_end_sales' pk=product.pk %}" method="post">
+          {% csrf_token %}
+          <input type="submit" value="강제 판매 종료">
+        </form>
+  
+      <!-- 판매 상품 목록으로 돌아가는 버튼 -->
+      <form action="{% url 'orders:sales_history' %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="판매상품 목록으로">
+      </form>
 </div>
+
+
 <script>
 // 카운트다운 할 날짜 설정
 var countDownDate = new Date("{{ product.auction_end_time|date:'Y/m/d H:i:s' }}").getTime();
@@ -55,4 +62,5 @@ var countdownfunction = setInterval(function() {
     }
 }, 1000);
 </script>
+
 {% endblock %}

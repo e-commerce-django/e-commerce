@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
-from products.models import Product, Bidder
+from products.models import Product, Bidder, Bid
 from django.views.generic import ListView
 from django.contrib import messages
+from django.utils import timezone
 
 # 구매 - purchase
 # @login_required
@@ -12,70 +13,120 @@ def purchase_history(request):
     products = Product.objects.filter(present_max_bidder_id = request.user.id) #present_max_bidder_id -> 임시적 필드
     # 진행 중인 상품의 개수 계산
     in_progress_count = products.filter(product_status=True).count()
+    # 진행 중인 상품 목록 조회
+    in_progress_sales = products.filter(product_status=True)
     # 종료된 상품의 개수 계산
-    end_count = products.filter(product_status=False).count()
+    completed_count = products.filter(product_status=False).count()
+     # 종료된 상품 목록 조회
+    completed_sales = products.filter(product_status=False)
     context = {
+        'in_progress_sales': in_progress_sales,
+        'completed_sales': completed_sales,
         'products' : products,
         'in_progress_count': in_progress_count,
-        'end_count': end_count
+        'completed_count': completed_count
     }
     return render(request, 'orders/purchase_history.html', context)
 
-# @login_required
-def purchase_history_ing(request):
-    # 로그인한 유저의 행만 가져오기
-    products = Product.objects.filter(present_max_bidder_id = request.user.id) #present_max_bidder_id -> 임시적 필드
-    # 진행 중인 상품 목록 조회
-    in_progress_sales = products.filter(product_status=True) # 괄호안 후에 수정 필수(user.name 관련)
-    context = {
-        'in_progress_sales': in_progress_sales
-    }
-    return render(request, 'orders/purchase_history_ing.html', context)
 
 # @login_required
-def purchase_history_end(request):
-    # 로그인한 유저의 행만 가져오기
-    products = Product.objects.filter(present_max_bidder_id = request.user.id) #present_max_bidder_id -> 임시적 필드
-    # 종료된 상품 목록 조회
-    completed_sales = products.filter(product_status=False) # 괄호안 후에 수정 필수(user.name 관련)
+def purchase_history_ing_detail(request, pk):
+    product = Product.objects.get(pk=pk)
     context = {
-        'completed_sales': completed_sales
+        'product' : product
     }
-    return render(request, 'orders/purchase_history_end.html', context)
+    return render(request, 'orders/purchase_history_ing_detail.html', context)
+
+fin_bidder = None
+# @login_required
+def purchase_history_end_detail(request, pk):
+    product = Product.objects.get(pk=pk)
+    product_name = get_object_or_404(Product, pk=pk).name
+    # bid 모델 변화 반영 후 수정 예정 (여기 부터)
+    bid_list=list(Bid.objects.values())
+    for bid in bid_list:
+        if bid['product'] == product_name:
+            global fin_bidder 
+            fin_bidder = bid['bidder']
+            return fin_bidder
+    # 여기 까지
+    user = request.user
+    if fin_bidder == user:
+        users_bid_result = '입찰에 성공하셨습니다.'
+    else:
+        users_bid_result = '입찰에 실패하셨습니다.'
+    context = {
+        'product' : product,
+        'users_bid_result' : users_bid_result
+    }
+    return render(request, 'orders/purchase_history_end_detail.html', context)
 
 
 
 # 판매 - Sales
 # @login_required
 def sales_history(request):
+    # 로그인한 유저의 행만 가져오기
+    products = Product.objects.filter(seller_id=request.user.id)
     # 진행 중인 상품의 개수 계산
-    in_progress_count = Product.objects.filter(seller=request.user, product_status=True).count()      # seller -> seller_id???
+    in_progress_count = products.filter(product_status=True).count()
+    # 진행 중인 상품 목록 조회
+    in_progress_sales = products.filter(product_status=True)
     # 종료된 상품의 개수 계산
-    end_count = Product.objects.filter(seller=request.user, product_status=False).count()
+    completed_count = products.filter(product_status=False).count()
+     # 종료된 상품 목록 조회
+    completed_sales = products.filter(product_status=False)
     context = {
         'in_progress_count': in_progress_count,
-        'end_count': end_count
+        'completed_count': completed_count,
+        'in_progress_sales': in_progress_sales,
+        'completed_sales': completed_sales,
+        'products' : products,
     }
     return render(request, 'orders/sales_history.html', context)
 
-# @login_required
-def sales_history_ing(request):
-    # 진행 중인 상품 목록 조회
-    in_progress_sales = Product.objects.filter(seller=request.user, product_status=True)
-    context = {
-        'in_progress_sales': in_progress_sales
-    }
-    return render(request, 'orders/sales_history_ing.html', context)
-
 
 # @login_required
-def sales_history_end(request):
-    # 종료된 상품 목록 조회
-    completed_sales = Product.objects.filter(seller=request.user, product_status=False)
+# 마이페이지 -> 판매 내역 -> 진행중 -> 하나의 상품의 상세페이지
+def sales_history_ing_detail(request, pk):
+    product = Product.objects.get(pk=pk)
     context = {
-        'completed_sales': completed_sales
+        'product' : product
     }
-    return render(request, 'orders/sales_history_end.html', context)
+    return render(request, 'orders/sales_history_ing_detail.html', context)
+
+# 강제 판매 종료 처리
+def force_end_sales(request, pk):
+    # 해당 상품 및 입찰 결과 가져오기
+    product = get_object_or_404(Product, pk=pk)
+    bid = Bid.objects.filter(product=product)
+
+    # 강제 판매 종료 버튼을 눌렀을 때 필드값 변경
+    if request.method == 'POST':
+        product.product_status = False
+        product.auction_end_time = timezone.now()
+        product.present_max_bidder_price = 0
+        product.present_max_bidder_id = 0
+        product.save()
+
+        bid.bid_result = False
+        bid.bid_time = timezone.now()
+        bid.save()
+
+    return redirect('orders:sales_history_ing_detail', pk=pk)
+
+# 마이페이지 -> 판매 내역 -> 진행 종료 -> 하나의 상품의 상세페이지
+# @login_required
+def sales_history_end_detail(request, pk):
+    product = Product.objects.get(pk=pk)
+    bid = Bid.objects.filter(product=product)
+
+    context = {
+        'product' : product,
+        'bid' : bid,
+    }
+    return render(request, 'orders/sales_history_end_detail.html', context)
+
 
 # 입찰 참여
 @login_required
