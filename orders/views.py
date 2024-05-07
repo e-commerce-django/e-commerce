@@ -6,8 +6,7 @@ from django.views.generic import ListView
 from django.contrib import messages
 from django.utils import timezone
 
-# 구매 - purchase
-# @login_required
+#구매 - purchase
 def purchase_history(request):
     purchase_product_id_list = []
     # 로그인한 유저가 구입한 상품만 가져오기
@@ -32,8 +31,6 @@ def purchase_history(request):
     }
     return render(request, 'orders/purchase_history.html', context)
 
-
-# @login_required
 def purchase_history_ing_detail(request, pk):
     product = Product.objects.get(pk=pk)
     context = {
@@ -42,7 +39,7 @@ def purchase_history_ing_detail(request, pk):
     return render(request, 'orders/purchase_history_ing_detail.html', context)
 
 fin_bidder = None
-# @login_required
+
 def purchase_history_end_detail(request, pk):
     product = Product.objects.get(pk=pk)
     product_id = get_object_or_404(Product, pk=pk).id
@@ -66,9 +63,7 @@ def purchase_history_end_detail(request, pk):
     return render(request, 'orders/purchase_history_end_detail.html', context)
 
 
-
 # 판매 - Sales
-# @login_required
 def sales_history(request):
     # 로그인한 유저의 행만 가져오기
     products = Product.objects.filter(seller_id=request.user.id)
@@ -90,7 +85,6 @@ def sales_history(request):
     return render(request, 'orders/sales_history.html', context)
 
 
-# @login_required
 # 마이페이지 -> 판매 내역 -> 진행중 -> 하나의 상품의 상세페이지
 def sales_history_ing_detail(request, pk):
     product = Product.objects.get(pk=pk)
@@ -103,7 +97,7 @@ def sales_history_ing_detail(request, pk):
 def force_end_sales(request, pk):
     # 해당 상품 및 입찰 결과 가져오기
     product = get_object_or_404(Product, pk=pk)
-    bid = Bid.objects.filter(product=product)
+    bids = Bid.objects.filter(product=product)
 
     # 강제 판매 종료 버튼을 눌렀을 때 필드값 변경
     if request.method == 'POST':
@@ -113,14 +107,15 @@ def force_end_sales(request, pk):
         product.present_max_bidder_id = 0
         product.save()
 
-        bid.bid_result = False
-        bid.bid_time = timezone.now()
-        bid.save()
+        # 각각의 입찰 결과를 수정하고 저장
+        for bid in bids:
+            bid.bid_result = False
+            bid.bid_time = timezone.now()
+            bid.save()
 
     return redirect('orders:sales_history_ing_detail', pk=pk)
 
 # 마이페이지 -> 판매 내역 -> 진행 종료 -> 하나의 상품의 상세페이지
-# @login_required
 def sales_history_end_detail(request, pk):
     product = Product.objects.get(pk=pk)
     bid = Bid.objects.filter(product=product)
