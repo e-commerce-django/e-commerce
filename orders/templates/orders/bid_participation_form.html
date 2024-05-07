@@ -77,6 +77,7 @@
                 {% if product.product_status %}
                 <p id="time-remaining">남은 시간: 계산 중...</p>
                 <p>현재 입찰가: ₩{{ current_bid }}</p>
+                <p>입찰 단위: ₩{{ product.bid_increment }}</p>
                 <!-- 빠른 입찰 옵션 -->
                 <p>빠른 입찰</p>
                 <div class="quick-bid-options">

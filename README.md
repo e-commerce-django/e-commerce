@@ -31,6 +31,11 @@ html, css, django-template
 `issue` 생성 및 issue number로 branch 생성  
 
 # 실행 순서
+python manage.py runserver
+celery -A config worker --loglevel=INFO -P solo #상품 상태 업데이트를 위한 서버를 여는 명령어입니다.
+celery -A config beat -l info #주기적 작업을 서버에 요청하는 명령어입니다.
+세 가지 전부 실행되어야 서비스를 원활하게 이용할 수 있습니다.
+
 
 ## install requirements.txt 
 ```
