@@ -23,15 +23,30 @@
       {% endif %}
     {% endif %}
     <p>상품 설명: {{ product.description }}</p>
+
+    <form method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}">
+      {% csrf_token %}
+      <button style='border:none;'>
+        {% if request.user in product.likes.all %}
+          <i class="far fa-heart" style="color:red; font-size: 17px;"></i>
+        {% else %}
+          <i class="fas fa-heart" style="color:white; font-size: 17px;"></i> 
+        {% endif %}
+      </button>
+      <span class="small">
+        {{ product.likes.all|length }} 명이 이 상품을 좋아합니다.
+      </span>
+  </form>
 </div>
+
+
+
 <script>
 // 카운트다운 할 날짜 설정
 var countDownDate = new Date("{{ product.auction_end_time|date:'Y/m/d H:i:s' }}").getTime();
 
-
 // 1초마다 카운트 다운 업데이트
 var countdownfunction = setInterval(function() {
-
     // 현재 날짜와 시간 가져오기
     var now = new Date().getTime();
 
@@ -54,5 +69,7 @@ var countdownfunction = setInterval(function() {
         document.getElementById("time-remaining").innerHTML = "경매가 종료되었습니다";
     }
 }, 1000);
+
 </script>
 {% endblock %}
+
