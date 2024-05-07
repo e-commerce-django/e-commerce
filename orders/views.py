@@ -9,8 +9,12 @@ from django.utils import timezone
 # 구매 - purchase
 # @login_required
 def purchase_history(request):
-    # 로그인한 유저의 행만 가져오기
-    products = Product.objects.filter(present_max_bidder_id = request.user.id) #present_max_bidder_id -> 임시적 필드
+    purchase_product_id_list = []
+    # 로그인한 유저가 구입한 상품만 가져오기
+    purchase_product_ids = Bidder.objects.filter(bidder=request.user.id)
+    for purchase_product_id in purchase_product_ids:
+        purchase_product_id_list.append(purchase_product_id.product_id)
+    products = Product.objects.filter(name__in=purchase_product_id_list)
     # 진행 중인 상품의 개수 계산
     in_progress_count = products.filter(product_status=True).count()
     # 진행 중인 상품 목록 조회
@@ -41,11 +45,11 @@ fin_bidder = None
 # @login_required
 def purchase_history_end_detail(request, pk):
     product = Product.objects.get(pk=pk)
-    product_name = get_object_or_404(Product, pk=pk).name
+    product_id = get_object_or_404(Product, pk=pk).id
     # bid 모델 변화 반영 후 수정 예정 (여기 부터)
     bid_list=list(Bid.objects.values())
     for bid in bid_list:
-        if bid['product'] == product_name:
+        if bid['product_id'] == product_id:
             global fin_bidder 
             fin_bidder = bid['bidder']
             return fin_bidder
