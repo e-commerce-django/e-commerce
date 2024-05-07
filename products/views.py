@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProductForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView
@@ -29,3 +29,20 @@ class ProductDetailView(DetailView):
         context['auction_has_not_started'] = current_time < self.object.auction_start_time
         context['auction_has_ended'] = current_time > self.object.auction_end_time
         return context
+    
+
+
+# 좋아요 기능
+def product_like_toggle(request, pk):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, pk=pk)
+        if request.user in product.likes.all():
+            product.likes.remove(request.user)
+        else:
+            product.likes.add(request.user)
+    return redirect(reverse('products:product_detail', kwargs={'pk': pk}))
+
+# 좋아요한 상품 목록 페이지
+def liked_products(request):
+    liked_products = Product.objects.filter(likes=request.user)
+    return render(request, 'products/liked_products.html', {'liked_products': liked_products})
