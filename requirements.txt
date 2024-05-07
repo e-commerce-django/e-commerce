@@ -3,3 +3,5 @@ python-dotenv==1.0.1
 psycopg2==2.9.9
 django-session-timeout==0.1.0
 celery==5.4.0
+django-celery-beat==2.6.0
+django-celery-results==2.5.1
