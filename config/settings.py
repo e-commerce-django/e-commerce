@@ -191,3 +191,15 @@ LOGGING = {
     },
 }
 
+LOGIN_REDIRECT_URL = '/'
+
+
+REQUIRE_EMAIL_VERIFICATION = True  # 또는 False, 이메일 인증이 필요한지 여부를 설정합니다.
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_ID")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+DEFAULT_FROM_MAIL = EMAIL_HOST_USER

@@ -1,15 +1,30 @@
+import os
+import random
+from dotenv import load_dotenv
+load_dotenv()
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 from django.views.generic import View, TemplateView
-
+from django.core.mail import send_mail, EmailMultiAlternatives
 from .forms import UserForm, UserLoginForm, UserModifyForm
-
 from products.models import Bid, Product
 from .models import User
-
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.conf import settings
+from django.utils.http import urlsafe_base64_decode
+from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+from django.contrib.auth.tokens import default_token_generator
+from django.http import JsonResponse
 
 class LoginView(View):
     def get(self, request):
@@ -83,9 +98,7 @@ class RegisterView(View):
             # 비밀번호를 해시하여 저장
             password = form.cleaned_data['password']
             hashed_password = make_password(password)
-            print("password: ", password)
-            print("hashed_password: ", hashed_password)
-            
+
             user = User(
                 email=form.cleaned_data['email'],
                 password=hashed_password,
@@ -119,6 +132,46 @@ class ModifyView(LoginRequiredMixin, View):
             return render(request, 'accounts/myinfo_modify.html', {'form': form})
         
 
+class EmailVerifyView(View):
+    def get(self, request):
+        return render(request, 'accounts/email_verify.html')
+
+    def post(self, request):
+        verification_code = request.POST.get('verification_code')
+        session_verification_code = request.session.get('verification_code')
+
+        if verification_code == session_verification_code:
+            # 이메일 인증 성공
+            request.session['email_verified'] = True
+            return redirect('register')
+        else:
+            # 이메일 인증 실패
+            messages.error(request, '인증 코드가 일치하지 않습니다.')
+            return redirect('send_email')
+
+
+def send_email(request):
+    if request.method == "POST":
+        # 랜덤 인증 코드 생성
+        verification_code = ''.join(random.choices('0123456789', k=6))
+        request.session['verification_code'] = verification_code
+
+        msg = EmailMultiAlternatives(
+            "가입 인증 메일",
+            f"{verification_code}",
+            os.getenv("EMAIL_HOST_ID"),
+            [request.POST.get("email")]  # 변경된 부분
+        )
+
+        try:
+            msg.send()
+            return JsonResponse({'message': '이메일이 성공적으로 전송되었습니다.', 'verification_code': verification_code}, status=200)  # 변경된 부분
+        except Exception as e:
+            print(e)
+            return JsonResponse({'error': '이메일 전송 중 오류가 발생했습니다.'}, status=400)  # 변경된 부분
+
+        
+
 @login_required
 def withdraw(request):
     if request.method == 'POST':
@@ -132,3 +185,4 @@ def withdraw(request):
         else:
             # return JsonResponse({'message': '오류가 발생했습니다.'}, status=400)
             return redirect("withdraw/")
+        
