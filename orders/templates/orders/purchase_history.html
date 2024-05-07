@@ -19,12 +19,13 @@
     }
 
     #sales-container {
-        text-align: center; /* 판매 내역 컨테이너 내용을 가운데 정렬 */
+        display: flex;
+        justify-content: center; /* 판매 내역 컨테이너 내용을 가운데 정렬 */
     }
 </style>
 
 <div id="sales-header">
-    <h2>구매 내역</h2>
+    <h2>{{ request.user.username }} 님의 구매 내역</h2>
 </div>
 
 <div id="sales-buttons">

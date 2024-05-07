@@ -1,34 +1,44 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="product-details">
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'orders/style.css' %}">
+</head>
+<div class="product-details" id="container">
     <div class="product-info">
-        <h2>{{ request.user.username }}님의 판매 종료된 {{ product.name }}의 페이지 입니다. </h2>
-        <img src="{{ product.image_url }}" alt="Product Image">
-        <h3>{{ product.name }}</h3>
-        <p>카테고리: {{ product.category }}</p>
-        <p>사이즈: {{ product.size }}</p>
-        <p>상품 설명: {{ product.description }}</p>
-        <p>입력하신 최소 입찰 가격: {{ product.min_bid_price }}</p>
-        <p>입찰 단위: {{ product.bid_increment }}</p>
-        <p>경매 시작 시간: {{ product.auction_start_time }}</p>
-        <p>경매 종료 시간: {{ product.auction_end_time }}</p>
+        <!-- <h2>{{ request.user.username }}님의 판매 종료된 {{ product.name }}의 페이지 입니다. </h2> -->
+        <img src="{{ product.image_url }}" alt="Product Image" id="product_img">
+        <h3 id="name">{{ product.name }}</h3>
+        <p id="category">{{ product.category }}</p>
+        <p id="size">{{ product.size }}</p>
+        <p id="description">{{ product.description }}</p>
+        <p id="your_price">입력하신 최소 입찰가: {{ product.min_bid_price }}원</p>
+        <p id="sales_bid_unit">입찰 단위: {{ product.bid_increment }}원</p>
+        <p id="start_time">{{ product.auction_start_time }}부터</p>
+        <p id="end_time">{{ product.auction_end_time }}까지</p>
 
 
           <!-- 판매 상품 목록으로 돌아가는 버튼 -->
           <form action="{% url 'orders:sales_history' %}" method="post">
              {% csrf_token %}
-             <input type="submit" value="판매상품 목록으로">
+             <input type="submit" value="판매상품 목록으로" id="sales_form">
           </form>
+    </div>
 
-    <div class="bid-info">
+    <div class="bid-info" id="bid_info">
         <h3>낙찰 결과 정보</h3>
+        <div id="bid_info_detail">
         {% if bid.bid_result %}
             <p>해당 상품의 낙찰자 : {{ bid.bidder_id.username }}님</p>
             <p>해당 상품의 최종 낙찰 가격 : {{ bid.bid_price }}</p>
             <p>해당 상품의 최종 낙찰 시간  : {{ bid.bid_time }}</p>
         {% else %}
-            <h3>낙찰에 실패하였습니다.</h3>
+            <p>낙찰에 실패하였습니다.</p>
         {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,26 +1,37 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'orders/style.css' %}">
+</head>
 <!-- 위치 조정 -->
-<div style="margin-left: 300px; margin-top: 100px; margin-bottom: 200px;">
-    <h2>{{ request.user.username }}님의 구매 종료된 {{ product.name }}의 페이지 입니다. </h2>
-    <h1>{{ product.name }}</h1>
-    <img src="{{ product.image_url }}" alt="Product Image">
-    <p>카테고리: {{ product.category }}</p>
-    <p>사이즈: {{ product.size }}</p>
-    <p>판매자 최소 입찰가: {{ product.min_bid_price }}₩</p>
-    <p>경매 시작일: {{ product.auction_start_time }}</p>
-    <p>경매 종료일: {{ product.auction_end_time }}</p>
-    <p>현재 최대 입찰가: {{ product.present_max_bid_price }}</p>
-    <p>입찰 단위: {{ product.bid_increment }}</p>
-    <p>상품 설명: {{ product.description }}</p>
-    <p>입찰 결과: {{ users_bid_result }}</p>
+<body>
+    <div id="container">
+    <!-- <div style="margin-left: 300px; margin-top: 100px; margin-bottom: 200px;"> -->
+
+    <!-- <h2>{{ request.user.username }}님의 구매 종료된 {{ product.name }}의 페이지 입니다. </h2> -->
+    <h1 id="name">{{ product.name }}</h1>
+    <img src="{{ product.image_url }}" alt="Product Image" id="product_img">
+    <p id="category">{{ product.category }}</p>
+    <p id="size">{{ product.size }}</p>
+    <p id="start_price">판매자 최소 입찰가: {{ product.min_bid_price }}원</p>
+    <p id="start_time">{{ product.auction_start_time }}부터</p>
+    <p id="end_time">{{ product.auction_end_time }}까지</p>
+    <p id="present_max_price">현재 최대 입찰가: {{ product.present_max_bid_price }}원</p>
+    <p id="bid_unit">입찰 단위: {{ product.bid_increment }}원</p>
+    <p id="description">{{ product.description }}</p>
+    <p id="bid_result">{{ users_bid_result }}</p>
 
 
     <!-- 구매 상품 목록으로 돌아가는 버튼 -->
     <form action="{% url 'orders:purchase_history' %}" method="post">
         {% csrf_token %}
-         <input type="submit" value="구매상품 목록으로">
+         <input type="submit" value="구매상품 목록으로" id="form">
     </form>
-</div>
+    </div>
+</body>
+</html>
 {% endblock %}
