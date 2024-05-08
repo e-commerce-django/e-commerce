@@ -15,7 +15,7 @@
             background-color: #f4f4f4;
             color: #333;
         }
-        .container {
+        .myinfo-container {
             max-width: 600px;
             margin: 20px auto; /* 페이지를 중앙에 정렬 */
             padding: 20px;
@@ -66,7 +66,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="myinfo-container">
         <h1>회원정보 수정</h1>
         <form method="post" action="{% url 'myinfo_modify' %}">
             {% csrf_token %}

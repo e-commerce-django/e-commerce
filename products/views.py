@@ -42,8 +42,8 @@ def product_like_toggle(request, pk):
             product.likes.add(request.user)
 
     # next 파라미터로 리다이렉트 결정
-    next_page = request.POST.get('next') or request.GET.get('next') or 'products:product_detail'
-    return redirect(next_page, pk=pk)
+    next_page = request.POST.get('next', reverse('products:product_detail', kwargs={'pk': pk}))
+    return redirect(next_page)
 
 # 좋아요한 상품 목록 페이지
 def liked_products(request):
