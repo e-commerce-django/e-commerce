@@ -22,16 +22,16 @@
       <div class="info-item">
         <span class="info-content">{{ product.size }}</span>
       </div>
-      <form class="like-item" method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}">
+      <form class="like-item" method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}?next=product_detail">
         {% csrf_token %}
-        <button style='border:none;'>
+        <button style="border:none; margin-left: 5px; text-align: right;">
           {% if request.user in product.likes.all %}
             <i class="far fa-heart" style="color:red; font-size: 20px;"></i>
           {% else %}
             <i class="fas fa-heart" style="color:white; font-size: 20px;"></i> 
           {% endif %}
         </button>
-        <span class="like-font">
+        <span class="like-font" style="text-align: right;" >
           {{ product.likes.all|length }} 명이 이 상품을 좋아합니다.
         </span>
       </form>
