@@ -71,6 +71,8 @@
           <h3>{{ product.name }}</h3>
         </a>
       </div>
+      {% empty %}
+        <p style="font-weight: bold;">해당 카테고리의 판매 중인 상품이 없습니다.</p>
       {% endfor %}
     </div>
   </div>

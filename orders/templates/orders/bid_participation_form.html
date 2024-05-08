@@ -23,9 +23,9 @@
             <div class="info-item">
                 <span class="info-content">{{ product.size }}</span>
             </div>
-        <form class="like-item" method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}">
+        <form class="like-item" method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}?next=orders:bid_participation">
             {% csrf_token %}
-            <button style='border:none;'>
+            <button style="border:none;margin-left: 5px;">
             {% if request.user in product.likes.all %}
                 <i class="far fa-heart" style="color:red; font-size: 20px;"></i>
             {% else %}

@@ -194,7 +194,7 @@ class ProductListView(ListView):
         elif sort_by == 'ending_soon':
             queryset = queryset.order_by('auction_end_time')
 
-        return queryset
+        return queryset.filter(product_status=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

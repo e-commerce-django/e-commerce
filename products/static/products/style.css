@@ -136,12 +136,12 @@
 .info-container {
     display: flex;
     justify-content: start;
-    gap: 20px;  /* 간격 조정 */
+    gap: 10px;
+    width: 100%;
   }
 .info-item {
-    background-color: #f8f9fa; /* 배경색 */
+    background-color: #ffffff; /* 배경색 */
     border-radius: 5px; /* 둥근 테두리 */
-    padding: 10px;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between; /* 내용을 양 끝으로 정렬 */
@@ -154,6 +154,7 @@
     color: #ffffff;
     padding: 5px 20px;
     margin-left: 20px;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 .like-item {
     font-size: 10px;
@@ -161,9 +162,11 @@
     color: #000000;
 }
 .like-font {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
     color: #000000;
+    margin-left: 5px;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
 }
 .quick-bid-options-content {
     font-weight: bold;
