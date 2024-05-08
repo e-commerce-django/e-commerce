@@ -23,10 +23,6 @@
             padding: 10px; /* 로고 주변 여백 설정 */
         }
 
-        nav {
-            margin-left: 100px; /* 로고와 네비게이션 바 사이의 간격 조절 */
-        }
-
         footer {
             position: fixed;
             left: 0;
@@ -43,11 +39,6 @@
 <body>
     <!-- 상단 로고와 사이트 명, 네비게이션 바 -->
     <header>
-        <div class="logo">
-            <a href="{% url 'index' %}">
-                <img src="{% static 'images/logo.png' %}" alt="Site Logo">
-            </a>
-        </div>
         <nav>
             {% include 'navbar.html' %}
         </nav>
