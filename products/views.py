@@ -52,4 +52,4 @@ def product_like_toggle(request, pk):
 # 좋아요한 상품 목록 페이지
 def liked_products(request):
     liked_products = Product.objects.filter(likes=request.user)
-    return render(request, 'products/liked_products.html', {'liked_products': liked_products})`
+    return render(request, 'products/liked_products.html', {'liked_products': liked_products})
