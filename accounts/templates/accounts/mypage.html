@@ -31,7 +31,7 @@
             text-align: center;
         }
         input[type="submit"] {
-            background-color: #007bff;
+            background-color: #000;
             color: #fff;
             padding: 8px 16px; /* 수정된 부분 */
             border: none;
@@ -40,7 +40,7 @@
             transition: background-color 0.3s;
         }
         input[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: lightgray;
         }
         a {
             display: block;
@@ -57,6 +57,7 @@
 </head>
 <body>
     <div class="container">
+        <!-- Section for viewing personal information -->
         <div style="text-align: center;">
             <h2>회원 정보</h2>
             <p>이름: {{ user.username }}</p>
@@ -65,14 +66,13 @@
             <p>전화번호: {{ user.phone_number }}</p>
         </div>
 
+        <!-- Section for managing user accounts -->
         <h2>회원 관리</h2>
         <form action="/accounts/mypage/myinfo_modify/" method="post">
             {% csrf_token %}
             <input type="submit" value="회원 정보 수정">
         </form>
-        <br>
-
-        <div>
+        <div style="margin-top: 10px;">
             <form action="/" method="post">
                 {% csrf_token %}
                 <input type="submit" value="회원 탈퇴" id="delete-user-btn">
@@ -80,15 +80,20 @@
             <br>
         </div>
 
+        <!-- Section for managing product history -->
         <h2>상품 관리 내역</h2>
-        <form action="{% url 'orders:sales_history' %}" method="post">
+        <div>
+            <form action="{% url 'orders:sales_history' %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="판매 내역 보기">
+            </form>
+        </div>
+        <div style="margin-top: 10px;">
+            <form action="{% url 'orders:purchase_history' %}" method="post">
             {% csrf_token %}
-            <input type="submit" value="판매 내역 보기">
-        </form>
-        <form action="{% url 'orders:purchase_history' %}" method="post">
-          {% csrf_token %}
-          <input type="submit" value="구매 내역 보기">
-      </form>
+            <input type="submit" value="구매 내역 보기">
+            </form>
+        </div>
     </div>
 </body>
 </html>
