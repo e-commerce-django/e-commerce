@@ -1,81 +1,124 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<html>
-<head>
-    <meta charset="utf-8">
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'orders/auction_style.css' %}">
-</head>
+<style>
+    #category_navbar {
+        position: absolute;
+        width: 255.78px;
+        height: 711px;
+        left: -6px;
+        top: 121px;
+    }
+
+    .product-container {
+        margin-left: 200px; /* 수정: 카테고리 바의 너비만큼 여백을 추가하여 목록이 겹치지 않게 함 */
+        padding: 20px; /* 수정: 내부 여백 추가 */
+        
+    }
+
+    .sort-buttons button {
+        background-color: #f0f0f0; /* Light Gray */
+        border: 1px solid #ccc; /* Light Gray */
+        color: #333; /* Dark Gray */
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    .sort-buttons button:hover {
+        background-color: #ddd; /* Slightly Lighter Gray */
+        border-color: #bbb; /* Slightly Darker Gray */
+    }
+
+        /* 카테고리 네비게이션 바 hover 효과 */
+        .navbar-nav .nav-item .nav-link:hover {
+        color: #ffc107 !important; /* Bootstrap의 기본 '주황색' */
+    }
+</style>
 
 
 <div id="category_navbar" style="display: flex;">
-  <!-- 좌측 네비게이션 바 -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="width: 200px; height: 100vh; flex-shrink: 0;">
-    <ul class="navbar-nav" style="color: white; flex-direction: column;">
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_page' %}" style="color: white;">All</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='스니커즈' %}" style="color: white;">스니커즈</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='운동화' %}" style="color: white;">운동화</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='구두' %}" style="color: white;">구두</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='부츠' %}" style="color: white;">부츠</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='플랫슈즈' %}" style="color: white;">플랫슈즈</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='로퍼' %}" style="color: white;">로퍼</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='샌들' %}" style="color: white;">샌들</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='슬리퍼' %}" style="color: white;">슬리퍼</a>
-      </li>
-      <li class="nav-item" style="display: flex; justify-content: center;">
-        <a class="nav-link" href="{% url 'orders:auction_category_page' category='기타 신발' %}" style="color: white;">기타 신발</a>
-      </li>
-    </ul>
-  </nav>
+    <!-- 좌측 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark" style="width: 200px; height: 100vh; flex-shrink: 0; margin-left: 40px;">
+        <ul class="navbar-nav" style="color: white; flex-direction: column; margin-left: 45px; font-size: 20px; border: #333;">
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_page' %}" style="color: white;">All</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='스니커즈' %}" style="color: white;">스니커즈</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='운동화' %}" style="color: white;">운동화</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='구두' %}" style="color: white;">구두</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='부츠' %}" style="color: white;">부츠</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='플랫슈즈' %}" style="color: white;">플랫슈즈</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='로퍼' %}" style="color: white;">로퍼</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='샌들' %}" style="color: white;">샌들</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='슬리퍼' %}" style="color: white;">슬리퍼</a>
+            </li>
+            <li class="nav-item" style="display: flex; justify-content: center;">
+                <a class="nav-link" href="{% url 'orders:auction_category_page' category='기타 신발' %}" style="color: white;">기타 신발</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <div class="product-container">
-  <!-- 상품 목록과 정렬 버튼을 담을 div -->
-  <div style="flex-grow: 1; margin-left: 20px;">
+    <!-- 상품 목록과 정렬 버튼을 담을 div -->
+    <div style="flex-grow: 1; margin-left: 20px;">
 
-  <!-- 카테고리명 또는 "All" 문구 -->
-  <div style="text-align: center; margin-top: 20px;">
-    <h2 style="font-weight: bold; font-size: 40px;">{{ category }}</h2> <!-- 수정: h3 태그를 h2로 변경하고, 글꼴 굵기와 크기 조정 -->
+        <!-- 카테고리명 또는 "All" 문구 -->
+        <div style="text-align: center; margin-top: 20px;">
+            <h2 style="font-weight: bold; font-size: 40px;">{{ category }}</h2> <!-- 수정: h3 태그를 h2로 변경하고, 글꼴 굵기와 크기 조정 -->
+        </div>
+
+        <!-- 정렬 버튼 -->
+        <div class="sort-buttons" style="text-align: right; margin-bottom: 20px; ">
+            <button class="btn btn-primary me-2" style="font-size: 20px;" onclick="location.href='{{ request.path }}?sort=latest'">최신순</button>
+            <button class="btn btn-primary" style="font-size: 20px;"onclick="location.href='{{ request.path }}?sort=ending_soon'">마감임박순</button>
+        </div>
+
+
+
+        <!-- 상품 목록 -->
+        <div class="container my-5">
+          <div class="row">
+              {% for product in products %}
+              <div class="col-lg-3 col-md-4 col-sm-6 mb-4" style="margin-top: 40px;">
+                  <div class="card h-100 shadow">
+                      <a href="{% url 'products:product_detail' pk=product.pk %}">
+                          <img class="card-img-top img-fluid" src="{{ product.image_url }}" alt="{{ product.name }}" style="height: 300px;">
+                      </a>
+                      <div class="card-body">
+                          <h5 class="card-title text-center text-dark mb-3">{{ product.name }}</h5>
+                      </div>
+                  </div>
+              </div>
+              {% empty %}
+              <div class="col">
+                  <p class="text-center text-muted" style="font-weight: 100; font-size: 30px;">현재 해당 카테고리의 판매 중인 상품이 없습니다.</p>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+    </div>
   </div>
 
-    <!-- 정렬 버튼 -->
-    <div class="sort-buttons" style="text-align: right; margin-bottom: 20px;">
-      <button class="btn btn-primary me-2" onclick="location.href='{{ request.path }}?sort=latest'">최신순</button>
-      <button class="btn btn-primary" onclick="location.href='{{ request.path }}?sort=ending_soon'">마감임박순</button>
-    </div>
-
-    <!-- 상품 목록 -->
-    <div class="product-list" style="text-align: center;">
-      {% for product in products %}
-      <div class="product-item" style="display: inline-block; margin: 20px;">
-        <a href="{% url 'products:product_detail' pk=product.pk %}">
-          <img src="{{ product.image_url }}" alt="{{ product.name }}">
-          <h3 style="font-size: 20px; margin-top: 10px;font-weight: bold;">{{ product.name }}</h3>
-        </a>
-    </div>
-
-      {% empty %}
-        <p style="font-weight: bold;">해당 카테고리의 판매 중인 상품이 없습니다.</p>
-      {% endfor %}
-    </div>
-  </div>
-</div>
 {% endblock %}

@@ -7,6 +7,8 @@ from django.views.generic import ListView
 from .models import Product
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
@@ -33,6 +35,7 @@ class ProductDetailView(DetailView):
 
 
 # 좋아요 기능
+@login_required
 def product_like_toggle(request, pk):
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=pk)
@@ -45,7 +48,8 @@ def product_like_toggle(request, pk):
     next_page = request.POST.get('next', reverse('products:product_detail', kwargs={'pk': pk}))
     return redirect(next_page)
 
+@login_required
 # 좋아요한 상품 목록 페이지
 def liked_products(request):
     liked_products = Product.objects.filter(likes=request.user)
-    return render(request, 'products/liked_products.html', {'liked_products': liked_products})
+    return render(request, 'products/liked_products.html', {'liked_products': liked_products})`
