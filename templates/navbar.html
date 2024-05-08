@@ -1,37 +1,39 @@
+{% load static %}
 <!-- 네비게이션 바 -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'index' %}" style="margin-left: 20px; font-size: 2.0rem; font-family: 'Arial Black', sans-serif; font-weight: bold; color: #d61d1d;">발</a><a class="navbar-brand" href="{% url 'index' %}" style="font-size: 2.0rem; font-family: 'Arial Black', sans-serif; font-weight: bold; color: #d61d1d;">바</a><a class="navbar-brand" href="{% url 'index' %}" style="font-size: 2.0rem; font-family: 'Arial Black', sans-serif; font-weight: bold; color: #d61d1d;">닥</a><a class="navbar-brand" href="{% url 'index' %}" style="font-size: 2.0rem; font-family: 'Arial Black', sans-serif; font-weight: bold; color: #fafafa;">옥션</a>
-
+    <a href="{% url 'index' %}">
+      <img src="{% static 'images/main_logo.png' %}" alt="Site Logo">
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'orders:auction_page' %}" style="font-size: 1.3rem; margin-left: 50px; margin-right: 20px;">Auction</a>
+          <li class="nav-item" style="margin-left: 30px; font-size: 25px;">
+            <a class="nav-link" href="{% url 'orders:auction_page' %}">Auction</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'products:product_registrater' %}" style="font-size: 1.3rem; margin-right: 20px;">Registration</a>
+          <li class="nav-item" style="margin-left: 30px; font-size: 25px;">
+            <a class="nav-link" href="{% url 'products:product_registrater' %}">Registration</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'products:liked_products' %}" style="font-size: 1.3rem; margin-right: 20px;">Like</a>
+          <li class="nav-item" style="margin-left: 30px; font-size: 25px;">
+            <a class="nav-link" href="{% url 'products:liked_products' %}">Like</a>
           </li>
           <!-- 사용자 인증 여부에 따라 로그인/회원가입 또는 마이페이지/로그아웃 버튼 표시 -->
           {% if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link" href="/accounts/mypage/" style="font-size: 1.3rem; margin-right: 20px;">My Page</a>
+              <li class="nav-item" style="margin-left: 30px; font-size: 25px;">
+                <a class="nav-link" href="/accounts/mypage/">My Page</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/accounts/logout/" style="font-size: 1.3rem; margin-right: 20px;">Logout</a>
-              </li>
+              <li class="nav-item" style="margin-left: 30px; font-size: 25px;">
+                <a class="nav-link" href="/accounts/logout/">Logout</a>
+              </li>z
           {% else %}
-              <li class="nav-item">
-                <a class="nav-link" href="/accounts/login/" style="font-size: 1.3rem; margin-right: 20px;">Login</a>
+              <li class="nav-item" style="margin-left: 30px; font-size: 25px;">
+                <a class="nav-link" href="/accounts/login/">Login</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/accounts/register/" style="font-size: 1.3rem; margin-right: 20px;">Join</a>
+              <li class="nav-item" style="margin-left: 30px; font-size: 25px;">
+                <a class="nav-link" href="/accounts/register/">Join</a>
               </li>
           {% endif %}
       </ul>
