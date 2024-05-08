@@ -1,45 +1,54 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<!-- 위치 조정 -->
-<div style="margin-left: 300px; margin-top: 100px; margin-bottom: 200px;">
-    <h1>{{ product.name }}</h1>
-    <img src="{{ product.image_url }}" alt="Product Image">
-    <p>카테고리: {{ product.category }}</p>
-    <p>사이즈: {{ product.size }}</p>
-    <p>판매자 최소 입찰가: {{ product.min_bid_price }}₩</p>
-    <p>경매 시작일: {{ product.auction_start_time }}</p>
-    <p>경매 종료일: {{ product.auction_end_time }}</p>
-    <p>현재 최대 입찰가: {{ product.present_max_bid_price }}</p>
-    <p>입찰 단위: {{ product.bid_increment }}</p>
-    {% if product.product_status %}
-      <p id="time-remaining">남은 시간: 계산 중...</p>
-      <a href="{% url 'orders:bid_participation' pk=product.id %}" class="btn btn-primary">입찰 참여하기</a>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'products/style.css' %}">
+
+<div class="product-detail-container">
+  <div class="product-image">
+      <img src="{{ product.image_url }}" alt="Product Image" class="img-fluid">
+      {% if product.product_status %}
+          <p id="time-remaining" class="time-remaining">경매 종료까지 남은 시간: 계산 중...</p>
       {% else %}
-        {% if auction_has_not_started %}
-            <p>아직 경매 기간이 아닙니다.</p>
-        {% elif auction_has_ended %}
-            <p>경매 기간이 종료되었습니다.</p>
+          <p class="time-remaining">경매가 종료되었습니다.</p>
       {% endif %}
-    {% endif %}
-    <p>상품 설명: {{ product.description }}</p>
-
-    <form method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}">
-      {% csrf_token %}
-      <button style='border:none;'>
-        {% if request.user in product.likes.all %}
-          <i class="far fa-heart" style="color:red; font-size: 17px;"></i>
-        {% else %}
-          <i class="fas fa-heart" style="color:white; font-size: 17px;"></i> 
-        {% endif %}
-      </button>
-      <span class="small">
-        {{ product.likes.all|length }} 명이 이 상품을 좋아합니다.
-      </span>
-  </form>
+  </div>
+  <div class="product-info">
+    <div class="info-container">
+      <div class="info-item">
+        <span class="info-content">{{ product.category }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-content">{{ product.size }}</span>
+      </div>
+      <form class="like-item" method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}">
+        {% csrf_token %}
+        <button style='border:none;'>
+          {% if request.user in product.likes.all %}
+            <i class="far fa-heart" style="color:red; font-size: 20px;"></i>
+          {% else %}
+            <i class="fas fa-heart" style="color:white; font-size: 20px;"></i> 
+          {% endif %}
+        </button>
+        <span class="like-font">
+          {{ product.likes.all|length }} 명이 이 상품을 좋아합니다.
+        </span>
+    </div>
+      <h1>{{ product.name }}</h1>
+      <p>상품 설명: {{ product.description }}</p>
+      <p>최소 입찰가: {{ product.min_bid_price }}₩</p>
+      <p>경매 시작일: {{ product.auction_start_time }}</p>
+      <p>경매 종료일: {{ product.auction_end_time }}</p>
+      <p>현재 최고 입찰가: {{ product.present_max_bid_price }}</p>
+      <p>입찰 증가 단위: {{ product.bid_increment }}</p>
+      {% if product.product_status %}
+          <div>
+            <a href="{% url 'orders:bid_participation' pk=product.id %}" class="btn start-bid-button">입찰 참여하기</a>
+          </div>
+      {% endif %}
+  </div>
 </div>
-
-
 
 <script>
 // 카운트다운 할 날짜 설정
@@ -72,4 +81,3 @@ var countdownfunction = setInterval(function() {
 
 </script>
 {% endblock %}
-
