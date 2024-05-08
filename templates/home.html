@@ -2,63 +2,258 @@
 {% load static %}
 
 {% block content %}
+<style>
+.banner {
+    margin-top: 50px;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(91.98deg, #797777 0%, #DFDADA 98.22%);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex; /* 배너 텍스트를 수직 가운데 정렬하기 위해 flexbox 사용 */
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
+
+.banner .banner-text {
+    font-family: 'Inter';
+    font-style: italic;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 40px;
+    text-align: center;
+    color: #fdfdfd; /* 검은색으로 변경 */
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    white-space: pre-line;      /* 줄 바꿈 유지 */
+}
+
+/* 인기 상품 섹션과 배너 섹션 간 간격 추가 */
+.popular-products {
+    margin-top: 50px;
+    margin-bottom: 80px; /* 아래쪽 여백 추가 */
+}
+
+.category-section {
+  margin-top: 50px;
+    margin-bottom: 80px; /* 아래쪽 여백 추가 */
+}
+
+
+/* 섹션 제목 글꼴 두껍게 */
+.category-title {
+    font-weight: bold;
+}
+
+/* 더 보기 버튼 디자인 */
+.more-btn {
+    border: 2px solid #000; /* 테두리 추가 */
+    color: #000; /* 글자 색상 검정으로 변경 */
+    float: right; /* 우측으로 이동 */
+    margin-top: 40px; /* hr 구분선 위에 여백 추가 */
+}
+
+/* 각 상품 카드 이미지 크기 일정하게 조정 */
+.card-img-top {
+    height: 200px;
+    object-fit: cover; /* 이미지 비율 유지하며 자르기 */
+}
+
+/* 자세히 보기 버튼 디자인 */
+.detail-btn {
+    background-color: #000; /* 배경색 검정으로 변경 */
+    border: 2px solid #000; /* 테두리 추가 */
+    color: #fff; /* 글자 색상 흰색으로 변경 */
+    transition: background-color 0.3s, color 0.3s; /* 변화 효과를 추가 */
+}
+
+.detail-btn:hover {
+    background-color: #fff; /* 호버시 배경색 흰색으로 변경 */
+    color: #000; /* 호버시 글자 색상 검정으로 변경 */
+}
+
+</style>
+
 <!-- 배너 섹션 -->
 <section class="banner">
-  <div class="container text-center">
-      <img src="{% static 'images/logo.png' %}" alt="Banner Image">
-      <!-- 배너 내용 추가 -->
-  </div>
+    <div class="container">
+        <!-- 배너 내용 추가 -->
+        <div class="banner-text">CUSTOMIZE YOUR SHOES, CUSTOMIZE YOUR VALUE 
+          신발의 가치를 커스텀하다.</div>
+    </div>
 </section>
 
-
 <div class="container">
-    <!-- 인기 상품 섹션 -->
-    <section class="popular-products">
-        <h2>인기 상품</h2>
-        <div class="row">
-            {% for product in object_list|slice:":3" %}
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                        <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary">자세히 보기</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <a href="#" class="btn btn-outline-primary mt-3">더 보기</a>
-    </section>
+  <!-- 인기 상품 섹션 -->
+  <section class="popular-products">
+    <h2 class="category-title">인기 상품</h2>
+      <div class="row">
+          {% for product in popular_products|slice:":3" %}
+          <div class="col-md-3 mb-6">
+              <div class="card">
+                  <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                  <div class="card-body">
+                      <h5 class="card-title">{{ product.name }}</h5>
+                      <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+      <a href="{% url 'orders:auction_page' %}" class="btn more-btn mt-3">더 보기</a>
+  </section>
 
-    <hr>
+  <hr>
 
-    <!-- 스니커즈 섹션 -->
-    <section class="sneakers">
-        <h2>스니커즈</h2>
-        <div class="row">
-            {% for product in sneakers %}
-            <!-- 각 상품 표시 -->
-            </div>
-            {% endfor %}
-        </div>
-        <a href="#" class="btn btn-outline-primary mt-3">더 보기</a>
-    </section>
+<!-- 스니커즈 섹션 -->
+<section class="category-section">
+  <h2 class="category-title">스니커즈</h2>
+  <div class="row">
+      {% for product in sneakers|slice:":3" %}
+      <div class="col-md-4 mb-6">
+          <div class="card">
+              <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+              <div class="card-body">
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <p class="card-text">{{ product.description }}</p>
+                  <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  <a href="{% url 'orders:auction_category_page' category='스니커즈' %}" class="btn more-btn mt-3">더 보기</a>
+</section>
 
-    <hr>
+<hr>
 
-    <!-- 단화 섹션 -->
-    <section class="flats">
-        <h2>단화</h2>
-        <div class="row">
-            {% for product in flats %}
-            <!-- 각 상품 표시 -->
-            </div>
-            {% endfor %}
-        </div>
-        <a href="#" class="btn btn-outline-primary mt-3">더 보기</a>
-    </section>
+<!-- 운동화 섹션 -->
+<section class="category-section">
+  <h2 class="category-title">운동화</h2>
+  <div class="row">
+      {% for product in athletic_shoes|slice:":3" %}
+      <div class="col-md-4">
+          <div class="card">
+              <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+              <div class="card-body">
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <p class="card-text">{{ product.description }}</p>
+                  <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  <a href="{% url 'orders:auction_category_page' category='운동화' %}" class="btn more-btn mt-3">더 보기</a>
+</section>
+
+<hr>
+
+<!-- 부츠 섹션 -->
+<section class="category-section">
+  <h2 class="category-title">부츠</h2>
+  <div class="row">
+      {% for product in boots|slice:":3" %}
+      <div class="col-md-4">
+          <div class="card">
+              <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+              <div class="card-body">
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <p class="card-text">{{ product.description }}</p>
+                  <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  <a href="{% url 'orders:auction_category_page' category='부츠' %}" class="btn more-btn mt-3">더 보기</a>
+</section>
+
+<hr>
+
+<!-- 플랫슈즈 섹션 -->
+<section class="category-section">
+  <h2 class="category-title">플랫슈즈</h2>
+  <div class="row">
+      {% for product in flats|slice:":3" %}
+      <div class="col-md-4">
+          <div class="card">
+              <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+              <div class="card-body">
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <p class="card-text">{{ product.description }}</p>
+                  <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  <a href="{% url 'orders:auction_category_page' category='플랫슈즈' %}" class="btn more-btn mt-3">더 보기</a>
+</section>
+
+<hr>
+
+<!-- 로퍼 섹션 -->
+<section class="category-section">
+  <h2 class="category-title">로퍼</h2>
+  <div class="row">
+      {% for product in loafers|slice:":3" %}
+      <div class="col-md-4">
+          <div class="card">
+              <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+              <div class="card-body">
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <p class="card-text">{{ product.description }}</p>
+                  <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  <a href="{% url 'orders:auction_category_page' category='로퍼' %}" class="btn more-btn mt-3">더 보기</a>
+</section>
+
+<hr>
+
+<!-- 샌들 섹션 -->
+<section class="category-section">
+  <h2 class="category-title">샌들</h2>
+  <div class="row">
+      {% for product in sandals|slice:":3" %}
+      <div class="col-md-4">
+          <div class="card">
+              <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+              <div class="card-body">
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <p class="card-text">{{ product.description }}</p>
+                  <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  <a href="{% url 'orders:auction_category_page' category='샌들' %}" class="btn more-btn mt-3">더 보기</a>
+</section>
+
+<hr>
+
+<!-- 슬리퍼 섹션 -->
+<section class="category-section">
+  <h2 class="category-title">슬리퍼</h2>
+  <div class="row">
+      {% for product in slippers|slice:":3" %}
+      <div class="col-md-4">
+          <div class="card">
+              <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+              <div class="card-body">
+                  <h5 class="card-title">{{ product.name }}</h5>
+                  <p class="card-text">{{ product.description }}</p>
+                  <a href="{% url 'products:product_detail' pk=product.pk %}" class="btn btn-primary detail-btn">자세히 보기</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+  </div>
+  <a href="{% url 'orders:auction_category_page' category='슬리퍼' %}" class="btn more-btn mt-3">더 보기</a>
+</section>
 </div>
 {% endblock %}
-
