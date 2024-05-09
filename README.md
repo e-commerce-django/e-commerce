@@ -30,18 +30,18 @@ html, css, django-template
 ## branch 관리
 `issue` 생성 및 issue number로 branch 생성  
 
-# 실행 순서
-wsl 또는 리눅스 환경에서 
-sudo apt install redis-server # redis 설치
-sudo service redis-server start # redis 서비스 시작
-redis-cli # pong이 출력 되면 redis 서버가 실행중이라는 뜻입니다
+# 실행 순서 
+wsl 또는 리눅스 환경에서  
+sudo apt install redis-server # redis 설치  
+sudo service redis-server start # redis 서비스 시작  
+redis-cli # pong이 출력 되면 redis 서버가 실행중이라는 뜻입니다  
 
-프롬포트 터미널에서
-python manage.py runserver
-celery -A config worker --loglevel=INFO -P solo #상 품 상태 업데이트를 위한 서버를 여는 명령어입니다.
-celery -A config beat -l info # 주기적 작업을 서버에 요청하는 명령어입니다.
-세 가지 전부 실행되어야 서비스를 원활하게 이용할 수 있습니다.
-
+프롬포트 터미널에서  
+python manage.py runserver  
+celery -A config worker --loglevel=INFO -P solo #상 품 상태 업데이트를 위한 서버를 여는 명령어입니다.  
+celery -A config beat -l info # 주기적 작업을 서버에 요청하는 명령어입니다. 
+세 가지 전부 실행되어야 서비스를 원활하게 이용할 수 있습니다.  
+  
 
 ## install requirements.txt 
 ```
