@@ -2,26 +2,25 @@
 
 {% block content %}
 <div class="container my-5">
-    <h2 class="text-center mb-4" style="color: rgb(10, 10, 10) ">{{ request.user.username }}님이 좋아요한 상품 목록</h2>
+    <h2 class="text-center mb-4">{{ request.user.username }}님이 좋아요한 상품 목록</h2>
     <div class="row">
         {% for product in liked_products %}
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="card h-100 border border-dark">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4" style="margin-top: 40px;">
+            <div class="card h-100 shadow">
                 <a href="{% url 'products:product_detail' pk=product.pk %}">
-                    <img class="card-img-top" src="{{ product.image_url }}" alt="{{ product.name }}">
+                    <img class="card-img-top img-fluid" src="{{ product.image_url }}" alt="{{ product.name }}" style="height: 300px;">
                 </a>
                 <div class="card-body">
-                    <h5 class="card-title text-center" style="color: #000; font-weight: bold;">{{ product.name }}</h5>
+                    <h5 class="card-title text-center text-dark mb-3">{{ product.name }}</h5>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col">
-            <p class="text-center" style="color: #fff;">좋아요한 상품이 없습니다.</p>
+            <p class="text-center text-muted">좋아요한 상품이 없습니다.</p>
         </div>
         {% endfor %}
     </div>
 </div>
 {% endblock %}
-
 
