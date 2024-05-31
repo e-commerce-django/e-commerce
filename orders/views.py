@@ -10,7 +10,7 @@ from django.utils import timezone
 def purchase_history(request):
     purchase_product_id_list = []
     # 로그인한 유저가 구입한 상품만 가져오기
-    purchase_product_ids = Bidder.objects.filter(bidder=request.user.id)
+    purchase_product_ids = Bidder.objects.filter(bidder_id=request.user.id)
     for purchase_product_id in purchase_product_ids:
         purchase_product_id_list.append(purchase_product_id.product_id)
     products = Product.objects.filter(name__in=purchase_product_id_list)
@@ -151,7 +151,7 @@ def bid_participation(request, pk):
                     # Bidder 인스턴스 생성 및 저장
                     bidder = Bidder(
                         product_id=product,  # 외래키 연결
-                        bidder=request.user,  # 현재 로그인한 사용자
+                        bidder_id=request.user,  # 현재 로그인한 사용자
                         bid_price=price  # 입찰 가격
                     )
                     bidder.save()  # 데이터베이스에 저장

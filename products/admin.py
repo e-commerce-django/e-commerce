@@ -36,8 +36,8 @@ class BidAdmin(admin.ModelAdmin):
 
 @admin.register(Bidder)
 class BidderAdmin(admin.ModelAdmin):
-    list_display = ['bidder', 'product_id', 'bid_price', 'bid_time']
+    list_display = ['bidder_id', 'product_id', 'bid_price', 'bid_time']
     search_fields = ['bidder__username', 'product_id__name', 'bid_price']
     list_filter = ['bid_time']
     date_hierarchy = 'bid_time'
-    raw_id_fields = ['bidder', 'product_id']
+    raw_id_fields = ['bidder_id', 'product_id']
