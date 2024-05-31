@@ -46,6 +46,6 @@ class Bid(models.Model):
 
 class Bidder(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='bidder_product_id')
-    bidder = models.ForeignKey(User, on_delete=models.CASCADE)
+    bidder_id = models.ForeignKey(User, on_delete=models.CASCADE)
     bid_price = models.DecimalField(max_digits=20, decimal_places=2)
     bid_time = models.DateTimeField(auto_now_add=True)

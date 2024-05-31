@@ -9,7 +9,6 @@ app = Celery('e-commerce')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
-
 @app.task(bind=True)
 def debug_task(self):
     print('Request:{0!r}'.format(self.request))
@@ -17,6 +16,6 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'update-status-5-minutes': {
         'task': 'update_product_status',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/1'),
     }
 }
