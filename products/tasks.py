@@ -96,11 +96,7 @@ def update_product_status():
 
 def send_auction_alert_emails(product, hours):
     bidders = Bidder.objects.filter(product_id=product)
-    # recipient_emails = [Bidder.bidder.email for bid in bids if bid.bidder is not None]
     recipient_emails = [bidder.bidder_id.email for bidder in bidders if bidder.bidder_id is not None]
-
-    # for email in recipient_emails:
-    #     send_email(email, product, hours)
 
     send_email(recipient_emails, product, hours)
     
@@ -113,31 +109,12 @@ def send_email(recipient_email, product, hours):
     msg = EmailMultiAlternatives(
           subject,
           message,
-          from_email,
-          []
+          from_email
       )
     msg.to = recipient_email
     try:
         msg.send()
         logger.info(f"Email sent to {recipient_email} for product {product.id}")
-        #send_mail(subject, message, from_email, to_email)
     except Exception as e:
         logger.error(f"Failed to send email to {recipient_email} for product {product.id}: {e}")
         logger.error(traceback.format_exc())
-
-
-# def send_email(recipient_emails, product, hours):
-#     subject = f"{product.name} 상품의 입찰이 {hours}시간 남았습니다."
-#     text_content = f"{product.name} 상품의 입찰이 {hours}시간 남았습니다. 구매할 기회를 놓치지 마세요!"
-#     html_content = f"<p>{product.name} 상품의 입찰이 <strong>{hours}시간</strong> 남았습니다. 구매할 기회를 놓치지 마세요!</p>"
-#     from_email = os.getenv("EMAIL_HOST_USER")
-
-#     msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_emails)
-#     msg.attach_alternative(html_content, "text/html")
-
-#     try:
-#         msg.send()
-#         logger.info(f"Email sent successfully to {recipient_emails}")
-#     except Exception as e:
-#         logger.error(f"Failed to send email: {str(e)}")
-#         logger.error(traceback.format_exc())
