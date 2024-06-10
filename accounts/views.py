@@ -46,14 +46,16 @@ class LoginView(View):
 
                 if user is not None:
                     login(request, user)
-                    print("로그인 성공")
+                    # print("로그인 성공")
                     return redirect('/')  
                 else:
-                    print("비밀번호가 일치하지 않습니다.")
-                    form.add_error('password', '비밀번호가 일치하지 않습니다.')
+                    # print("비밀번호가 일치하지 않습니다.")
+                    # form.add_error('password', '비밀번호가 일치하지 않습니다.')
+                    messages.error(request, '비밀번호가 일치하지 않습니다.')
             except User.DoesNotExist as e:
                 # print(e)
-                form.add_error('email', '등록되지 않은 이메일입니다.')
+                # form.add_error('email', '등록되지 않은 이메일입니다.')
+                messages.error(request, '존재하지 않는 이메일입니다.')
         return render(request, 'accounts/login.html', {'form': form})
 
 
