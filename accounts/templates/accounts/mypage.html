@@ -152,7 +152,10 @@
         xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
         xhr.onload = function () {
             if (xhr.status !== 200) {
-                alert("오류가 발생했습니다.");
+                // 오류 메시지를 표시하는 요소를 찾아 메시지를 설정합니다.
+                document.getElementById('error-message').innerText = "오류가 발생했습니다.";
+                // 필요에 따라 오류 메시지 요소를 보이게 할 수 있습니다.
+                document.getElementById('error-message').style.display = 'block';
             }
         };
         xhr.send();
