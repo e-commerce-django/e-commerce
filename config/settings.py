@@ -46,11 +46,13 @@ INSTALLED_APPS = [
     "accounts",
     "orders",
     "products",
+    'api',
     "widget_tweaks",
     "django_extensions",
     "django_session_timeout",
     'django_celery_beat',
     'django_celery_results',
+    'rest_framework',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

@@ -35,11 +35,12 @@ class ProductForm(forms.ModelForm):
     bid_increment = forms.ChoiceField(choices=BID_INCREMENT_CHOICES, label='입찰 증가 단위')
     category = forms.ChoiceField(choices=CATEGORY_CHOICES, label='카테고리')
     size = forms.ChoiceField(choices=SIZE_CHOICES, label='사이즈')
+    tags = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'data-role': 'tagsinput'}), required=False, label='태그')
 
 
     class Meta:        
         model = Product
-        fields = ['name', 'description', 'image_url', 'min_bid_price', 'bid_increment', 'auction_start_time', 'auction_end_time', 'category', 'size']
+        fields = ['name', 'description', 'image_url', 'min_bid_price', 'bid_increment', 'auction_start_time', 'auction_end_time', 'category', 'size', 'tags']
         exclude = ['seller'] # 판매자 폼에서 입력 X
         labels = {
             'name': '상품명',
@@ -48,6 +49,7 @@ class ProductForm(forms.ModelForm):
             'min_bid_price': '최소 입찰가',
             'auction_start_time': '경매 시작 시간',
             'auction_end_time': '경매 종료 시간',
+            'tags': '태그'
         }
         widgets = {
             'auction_start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}), # 캘린더 뷰 위젯 설정
