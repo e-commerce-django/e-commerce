@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "django_session_timeout",
     'django_celery_beat',
     'django_celery_results',
+    'api',
+    'rest_framework'
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
