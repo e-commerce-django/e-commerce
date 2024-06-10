@@ -29,18 +29,24 @@
         }
         form {
             text-align: center;
+            margin-top: 10px;
         }
-        input[type="submit"] {
+        input[type="submit"],
+        input[type="button"],
+        .modal button {
             background-color: #000;
             color: #fff;
-            padding: 8px 16px; /* 수정된 부분 */
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 10px 0;
             transition: background-color 0.3s;
         }
-        input[type="submit"]:hover {
-            background-color: lightgray;
+        input[type="submit"]:hover,
+        input[type="button"]:hover,
+        .modal button:hover {
+            background-color: #333;
         }
         a {
             display: block;
@@ -53,7 +59,7 @@
         a:hover {
             color: #0056b3;
         }
-
+    
         /* 추가된 CSS */
         .modal {
             display: none;
@@ -64,16 +70,18 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
         }
         .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
+            background-color: #fff;
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
             max-width: 400px;
             border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .close {
             color: #aaa;
@@ -88,6 +96,7 @@
             cursor: pointer;
         }
     </style>
+    
 </head>
 <body>
     <div class="mypage-container">
@@ -106,26 +115,20 @@
             {% csrf_token %}
             <input type="submit" value="회원 정보 수정">
         </form>
-        <div style="margin-top: 10px;">
-            <!-- 회원 탈퇴 버튼에 모달 추가 -->
-            <input type="submit" value="회원 탈퇴" id="delete-user-btn">
-            <br>
-        </div>
+        <form>
+            <input type="button" value="회원 탈퇴" id="delete-user-btn">
+        </form>
 
         <!-- Section for managing product history -->
         <h2>상품 관리 내역</h2>
-        <div>
-            <form action="{% url 'orders:sales_history' %}" method="post">
-                {% csrf_token %}
-                <input type="submit" value="판매 내역 보기">
-            </form>
-        </div>
-        <div style="margin-top: 10px;">
-            <form action="{% url 'orders:purchase_history' %}" method="post">
+        <form action="{% url 'orders:sales_history' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="판매 내역 보기">
+        </form>
+        <form action="{% url 'orders:purchase_history' %}" method="post">
             {% csrf_token %}
             <input type="submit" value="구매 내역 보기">
-            </form>
-        </div>
+        </form>
     </div>
 
     <!-- 추가된 모달 -->
@@ -137,35 +140,34 @@
             <button type="button" onclick="closeModal()">취소</button>
         </div>
     </div>
+
+    <script>
+        document.getElementById('delete-user-btn').addEventListener('click', function () {
+            // 확인 모달 열기
+            document.getElementById('confirmModal').style.display = 'block';
+        });
+
+        function withdraw() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'withdraw' %}", true);
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.onload = function () {
+                if (xhr.status !== 200) {
+                    // 오류 메시지를 표시하는 요소를 찾아 메시지를 설정합니다.
+                    document.getElementById('error-message').innerText = "오류가 발생했습니다.";
+                    // 필요에 따라 오류 메시지 요소를 보이게 할 수 있습니다.
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            };
+            xhr.send();
+            closeModal(); // 모달 닫기
+        }
+
+        function closeModal() {
+            // 모달 닫기
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+    </script>
 </body>
-</html>
-
-<script>
-    document.getElementById('delete-user-btn').addEventListener('click', function () {
-        // 확인 모달 열기
-        document.getElementById('confirmModal').style.display = 'block';
-    });
-
-    function withdraw() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "{% url 'withdraw' %}", true);
-        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
-        xhr.onload = function () {
-            if (xhr.status !== 200) {
-                // 오류 메시지를 표시하는 요소를 찾아 메시지를 설정합니다.
-                document.getElementById('error-message').innerText = "오류가 발생했습니다.";
-                // 필요에 따라 오류 메시지 요소를 보이게 할 수 있습니다.
-                document.getElementById('error-message').style.display = 'block';
-            }
-        };
-        xhr.send();
-        closeModal(); // 모달 닫기
-    }
-
-    function closeModal() {
-        // 모달 닫기
-        document.getElementById('confirmModal').style.display = 'none';
-    }
-</script>
 
 {% endblock %}
