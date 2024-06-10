@@ -56,7 +56,13 @@
                 </div>
             </div>
             <div class="custom-bid">
-                <input type="number" id="custom_bid_input" placeholder="₩{{ current_bid|add:product.bid_increment }}" />
+                <div class="input-wrap">
+                    <input type="number" id="custom_bid_input" value="{{ current_bid|add:product.bid_increment }}" step="{{ product.bid_increment }}" class="custom-bid-input"/>
+                    <div class="custom-bid-buttons">
+                        <button type="button" class="increment-button" onclick="incrementValue()"></button>
+                        <button type="button" class="decrement-button" onclick="decrementValue()"></button>
+                    </div>
+                </div>
                 <button type="button" onclick="setCustomBid()">입찰</button>
             </div>
         </form>
