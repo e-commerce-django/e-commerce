@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <title>회원가입</title>
     <style>
         body {
@@ -20,7 +19,6 @@
         .registration-container {
             max-width: 400px;
             margin: 50px auto;
-            height: 550px;
             padding: 20px;
             background-color: #fff;
             border-radius: 5px;
@@ -69,7 +67,56 @@
             transition: background-color 0.3s;
         }
         .email-verify-button:hover {
-            background-color: #007bff;
+            background-color: #0056b3;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .message {
+            color: red;
+            margin-top: 15px;
+            display: none;
+        }
+        .verify-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .verify-button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
@@ -81,64 +128,84 @@
             <input type="text" name="username" placeholder="사용자 이름" required>
             <input type="email" name="email" id="email" placeholder="이메일 주소" required>
             <button type="button" class="email-verify-button" onclick="sendEmailVerification()">이메일 인증</button><br>
-            <!-- <input type="text" name="verification_code" id="verification_code" placeholder="인증 코드" required><br> -->
             <input type="password" name="password" placeholder="비밀번호" required>
             <input type="tel" name="phone_number" placeholder="전화번호" required>
             <input type="text" name="address" placeholder="주소" required>
             <button type="submit">회원 가입</button>
+            <p id="verification-message" class="message">이메일 인증을 먼저 완료해주세요.</p>
         </form>
     </div>
 
-    
-</body>
-</html>
+    <!-- Modal structure -->
+    <div id="verificationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>이메일로 받은 인증 코드를 입력하세요.</p>
+            <input type="text" id="verification_code" placeholder="인증 코드">
+            <button type="button" class="verify-button" onclick="verifyCode()">인증</button>
+            <p id="modal-message" class="message"></p>
+        </div>
+    </div>
 
-<script>
-    var csrftoken = '{{ csrf_token }}';
+    <script>
+        var csrftoken = '{{ csrf_token }}';
+        var email_verified = false; // 기본 이메일 인증 상태는 false
 
-    function sendEmailVerification() {
-        var email = document.getElementById("email").value;
+        function sendEmailVerification() {
+            var email = document.getElementById("email").value;
 
-        $.ajax({
-            url: "/accounts/register/verification/",
-            method: "POST",
-            headers: { "X-CSRFToken": csrftoken },
-            data: {
-                "email": email,
-                "csrfmiddlewaretoken": csrftoken
-            },
-            success: function(response) {
-                console.log(response); // 서버에서 반환된 응답을 콘솔에 출력
-                var verification_code = response.verification_code; // 서버에서 반환된 인증 코드
-                var user_input = prompt("이메일로 받은 인증 코드를 입력하세요.");
-                console.log("verification_code: ", verification_code);
-                if (user_input !== null) {
-                    if (user_input === verification_code) {
-                        alert("인증되었습니다."); // 정확한 인증 코드를 입력한 경우
-                        // 인증에 성공하면 세션 상태를 true로 설정
-                        sessionStorage.setItem("email_verified", "true");
-                    } else {
-                        alert("인증되지 않았습니다."); // 잘못된 인증 코드를 입력한 경우
-                        // 인증에 실패하면 세션 상태를 false로 설정
-                        sessionStorage.setItem("email_verified", "false");
-                    }
+            $.ajax({
+                url: "/accounts/register/verification/",
+                method: "POST",
+                headers: { "X-CSRFToken": csrftoken },
+                data: {
+                    "email": email,
+                    "csrfmiddlewaretoken": csrftoken
+                },
+                success: function(response) {
+                    console.log(response); // 서버에서 반환된 응답을 콘솔에 출력
+                    var verification_code = response.verification_code; // 서버에서 반환된 인증 코드
+                    sessionStorage.setItem("verification_code", verification_code);
+                    document.getElementById("verificationModal").style.display = "block"; // 모달 열기
+                },
+                error: function(xhr, status, error) {
+                    alert("서버와의 통신 중 오류 발생");
                 }
-            },
-            error: function(xhr, status, error) {
-                alert("서버와의 통신 중 오류 발생");
+            });
+        }
+
+        function verifyCode() {
+            var user_input = document.getElementById("verification_code").value;
+            var verification_code = sessionStorage.getItem("verification_code");
+            var modalMessage = document.getElementById("modal-message");
+
+            if (user_input === verification_code) {
+                modalMessage.style.color = "green";
+                modalMessage.textContent = "인증되었습니다.";
+                email_verified = true; // 이메일 인증 상태를 true로 변경
+                sessionStorage.setItem("email_verified", "true");
+                setTimeout(closeModal, 2000); // 2초 후 모달 닫기
+            } else {
+                modalMessage.style.display = "block";
+                modalMessage.style.color = "red";
+                modalMessage.textContent = "인증 코드가 일치하지 않습니다.";
+                sessionStorage.setItem("email_verified", "false");
+            }
+        }
+
+        function closeModal() {
+            document.getElementById("verificationModal").style.display = "none";
+        }
+
+        document.getElementById("register-form").addEventListener("submit", function(event) {
+            var verificationMessage = document.getElementById("verification-message");
+
+            if (!email_verified) { // 이메일 인증 상태를 확인
+                verificationMessage.style.display = "block";
+                event.preventDefault(); // 폼 제출 방지
             }
         });
-    }
-
-    // 회원가입 버튼 클릭 시 이메일 인증 상태를 확인하여 진행
-    document.getElementById("register-form").addEventListener("submit", function(event) {
-        var email_verified = sessionStorage.getItem("email_verified");
-        if (email_verified !== "true") {
-            alert("이메일 인증을 먼저 완료해주세요.");
-            event.preventDefault(); // 폼 제출 방지
-        }
-    });
-</script>
-
-
+    </script>
+</body>
+</html>
 {% endblock %}
