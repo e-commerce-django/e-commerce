@@ -29,18 +29,24 @@
         }
         form {
             text-align: center;
+            margin-top: 10px;
         }
-        input[type="submit"] {
+        input[type="submit"],
+        input[type="button"],
+        .modal button {
             background-color: #000;
             color: #fff;
-            padding: 8px 16px; /* 수정된 부분 */
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 10px 0;
             transition: background-color 0.3s;
         }
-        input[type="submit"]:hover {
-            background-color: lightgray;
+        input[type="submit"]:hover,
+        input[type="button"]:hover,
+        .modal button:hover {
+            background-color: #333;
         }
         a {
             display: block;
@@ -53,7 +59,44 @@
         a:hover {
             color: #0056b3;
         }
+    
+        /* 추가된 CSS */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
+    
 </head>
 <body>
     <div class="mypage-container">
@@ -72,52 +115,59 @@
             {% csrf_token %}
             <input type="submit" value="회원 정보 수정">
         </form>
-        <div style="margin-top: 10px;">
-            <form action="/" method="post">
-                {% csrf_token %}
-                <input type="submit" value="회원 탈퇴" id="delete-user-btn">
-            </form>
-            <br>
-        </div>
+        <form>
+            <input type="button" value="회원 탈퇴" id="delete-user-btn">
+        </form>
 
         <!-- Section for managing product history -->
         <h2>상품 관리 내역</h2>
-        <div>
-            <form action="{% url 'orders:sales_history' %}" method="post">
-                {% csrf_token %}
-                <input type="submit" value="판매 내역 보기">
-            </form>
-        </div>
-        <div style="margin-top: 10px;">
-            <form action="{% url 'orders:purchase_history' %}" method="post">
+        <form action="{% url 'orders:sales_history' %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="판매 내역 보기">
+        </form>
+        <form action="{% url 'orders:purchase_history' %}" method="post">
             {% csrf_token %}
             <input type="submit" value="구매 내역 보기">
-            </form>
+        </form>
+    </div>
+
+    <!-- 추가된 모달 -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>정말로 회원 탈퇴하시겠습니까?</p>
+            <button type="button" onclick="withdraw()">확인</button>
+            <button type="button" onclick="closeModal()">취소</button>
         </div>
     </div>
-</body>
-</html>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+    <script>
         document.getElementById('delete-user-btn').addEventListener('click', function () {
-            if (confirm("정말로 회원 탈퇴하시겠습니까?")) {
-                // 확인을 누르면 AJAX 요청 수행
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "{% url 'withdraw' %}", true);
-                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        alert("회원 탈퇴가 완료되었습니다.");
-                        // 회원 탈퇴 후 리다이렉트 등 필요한 동작 수행
-                    } else {
-                        alert("오류가 발생했습니다.");
-                    }
-                };
-                xhr.send();
-            }
+            // 확인 모달 열기
+            document.getElementById('confirmModal').style.display = 'block';
         });
-    });
-</script>
+
+        function withdraw() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'withdraw' %}", true);
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.onload = function () {
+                if (xhr.status !== 200) {
+                    // 오류 메시지를 표시하는 요소를 찾아 메시지를 설정합니다.
+                    document.getElementById('error-message').innerText = "오류가 발생했습니다.";
+                    // 필요에 따라 오류 메시지 요소를 보이게 할 수 있습니다.
+                    document.getElementById('error-message').style.display = 'block';
+                }
+            };
+            xhr.send();
+            closeModal(); // 모달 닫기
+        }
+
+        function closeModal() {
+            // 모달 닫기
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+    </script>
+</body>
 
 {% endblock %}

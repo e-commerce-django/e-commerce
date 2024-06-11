@@ -23,6 +23,19 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def tags_list(self):
+        if self.tags:
+            return self.tags.split(',')
+        return []
+
+    @tags_list.setter
+    def tags_list(self, value):
+        if isinstance(value, list):
+            self.tags = ','.join(value)
+        else:
+            self.tags = value
 
     class Meta:
         db_table = 'product'

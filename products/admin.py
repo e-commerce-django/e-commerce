@@ -12,8 +12,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-
-    list_display = ['id', 'seller', 'name', 'description', 'image_url', 'min_bid_price', 'bid_increment', 'auction_start_time', 'auction_end_time', 'product_status', 'present_max_bid_price', 'present_max_bidder_id', 'category', 'size']
+    list_display = ['id', 'seller', 'name', 'description', 'image_url', 'min_bid_price', 'bid_increment', 'auction_start_time', 'auction_end_time', 'product_status', 'present_max_bid_price', 'present_max_bidder_id', 'category', 'size', 'tags']
     search_fields = ['name', 'description', 'category']
     list_filter = ['product_status', 'auction_start_time']
     date_hierarchy = 'auction_start_time'
