@@ -49,3 +49,4 @@ class Bidder(models.Model):
     bidder_id = models.ForeignKey(User, on_delete=models.CASCADE)
     bid_price = models.DecimalField(max_digits=20, decimal_places=2)
     bid_time = models.DateTimeField(auto_now_add=True)
+    billing_key = models.CharField(max_length=255, blank=True)  # 빌링키 저장 필드

@@ -19,4 +19,6 @@ urlpatterns = [
     path('bid_participation/<int:pk>/', views.bid_participation, name='bid_participation'),
     path('auction/', views.ProductListView.as_view(), name='auction_page'),
     path('auction/<str:category>/', views.ProductListView.as_view(), name='auction_category_page'),
+    path('process_payment/', views.process_payment, name='process_payment'),
+    path('bid_complete/<int:product_id>/', views.bid_complete, name='bid_complete'),
 ]
