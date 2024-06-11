@@ -21,6 +21,7 @@ class Product(models.Model):
     likes = models.ManyToManyField(User, related_name='liked_products', blank=True)   # 해당 상품에 좋아요한 사용자 집합 필드 추가
     tags = models.TextField(blank=True)  # 태그 필드 추가
 
+
     def __str__(self):
         return self.name
     
