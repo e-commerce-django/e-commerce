@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="payment-container">
+    <h1>결제 정보</h1>
+    <button type="button" onclick="requestPay('{{ request.user.email }}', '{{ request.user.username }}', '{{ request.user.id }}', '{{ product.id }}')">결제하기</button>
+</div>
+
+<!-- 포트원 결제 -->
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<!-- iamport.payment.js -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script>
+    function requestPay(BuyerEmail, BuyerName, BuyerUid, ProductId) {
+        var IMP = window.IMP; 
+        IMP.init('imp68062031');
+        var ProductName = '{{ product.name }}';
+
+        IMP.request_pay(
+            {
+                pg: "kakaopay",
+                pay_method: "card",
+                merchant_uid: `payment-${ProductId}-${crypto.randomUUID()}`,
+                name: ProductName,
+                customer_uid: BuyerUid,
+                buyer_email: BuyerEmail,
+                buyer_name: BuyerName,
+            },
+            function(rsp) {
+                if (rsp.success) {
+                    console.log('빌링키 발급 성공', rsp);
+                    alert('입찰 참여가 완료되었습니다.');
+                    window.location.href = "{% url 'orders:payment_complete' %}";
+                } else {
+                    var msg = "실패: ";
+                    msg += rsp.error_msg;
+                    alert(msg);
+                }
+            }
+        );
+    }
+</script>
+{% endblock %}

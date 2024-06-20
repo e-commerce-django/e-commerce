@@ -10,16 +10,14 @@
 <!-- 위치 조정 -->
 <body>
     <div id="container">
-    <!-- <h3>{{ request.user.username }}님이 구매 중인 {{ product.name }}의 페이지 입니다. </h3> -->
+    <h3>{{ request.user.username }}님이 구매 중인 {{ product.name }}의 페이지 입니다. </h3>
     <h1 id="name">{{ product.name }}</h1>
     <img src="{{ product.image_url }}" alt="Product Image" id="product_img">
     <p id="category">{{ product.category }}</p>
     <p id="size">{{ product.size }}</p>
-    <p id="start_price">판매자 최소 입찰가: {{ product.min_bid_price }}원</p>
+    <p id="start_price">사용자 희망 입찰가 : {{ bid_price }}원</p>
     <p id="start_time">{{ product.auction_start_time }}부터</p>
     <p id="end_time">{{ product.auction_end_time }}까지</p>
-    <p id="present_max_price">현재 최대 입찰가: {{ product.present_max_bid_price }}원</p>
-    <p id="bid_unit">입찰 단위: {{ product.bid_increment }}원</p>
     <p id="description">{{ product.description }}</p>
     <p id="time-remaining">남은 시간: 계산 중...</p>
 

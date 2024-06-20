@@ -43,10 +43,10 @@
         <p>경매 종료 시간: {{ product.auction_end_time }}</p>
         <p>현재 입찰가: {{ current_bid }}</p>
         <p>입찰 단위: {{ product.bid_increment }}</p>
-        <form id="bid_form" action="{% url 'orders:process_payment'%}" method="POST">
+        <form id="bid_form" action="{% url 'orders:bid_participation' product.id %}" method="POST">
             {% csrf_token %}
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-            <input type="hidden" id="bid_price" name="bid_amount" value="">
+            <input type="hidden" name="product" value="{{ product.id }}">
+            <input type="hidden" id="bid_price" name="price" value="">
             <h2>빠른 입찰<h2>
             <div class="quick-bid-options-content">
                 <div class="quick-bid-options">
@@ -56,14 +56,14 @@
                 </div>
             </div>
             <div class="custom-bid">
-              <div class="input-wrap">
-                <input type="number" id="custom_bid_input" value="{{ current_bid|add:product.bid_increment }}" step="{{ product.bid_increment }}" class="custom-bid-input"/>
-                <div class="custom-bid-buttons">
-                    <button type="button" class="increment-button" onclick="incrementValue()"></button>
-                    <button type="button" class="decrement-button" onclick="decrementValue()"></button>
+                <div class="input-wrap">
+                    <input type="number" id="custom_bid_input" value="{{ current_bid|add:product.bid_increment }}" step="{{ product.bid_increment }}" class="custom-bid-input"/>
+                    <div class="custom-bid-buttons">
+                        <button type="button" class="increment-button" onclick="incrementValue()"></button>
+                        <button type="button" class="decrement-button" onclick="decrementValue()"></button>
+                    </div>
                 </div>
-            </div>
-            <button type="button" onclick="setCustomBid()">입찰계속하기</button>
+                <button type="button" onclick="setCustomBid()">입찰계속하기</button>
             </div>
         </form>
     </div>

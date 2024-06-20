@@ -206,3 +206,7 @@ DEFAULT_FROM_MAIL = EMAIL_HOST_USER
 
 IAMPORT_API_KEY = os.getenv("IAMPORT_API_KEY")
 IAMPORT_API_SECRET = os.getenv("IAMPORT_API_SECRET")
+
+# 환경 변수 설정
+storeId = os.getenv('storeId')
+channelKey = os.getenv('channelKey')

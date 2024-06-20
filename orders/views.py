@@ -12,6 +12,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 import logging
 import os
 import traceback
+from django.views.decorators.csrf import csrf_exempt
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -45,26 +46,23 @@ def purchase_history(request):
 
 def purchase_history_ing_detail(request, pk):
     product = Product.objects.get(pk=pk)
+    purchase_user = Bidder.objects.filter(product_id=pk, bidder_id=request.user.id).first()   # 사용자 희망 입찰가
     context = {
-        'product' : product
+        'product' : product,
+        'bid_price' : purchase_user.bid_price
     }
     return render(request, 'orders/purchase_history_ing_detail.html', context)
 
-fin_bidder = None
+
 
 def purchase_history_end_detail(request, pk):
     product = Product.objects.get(pk=pk)
-    product_id = get_object_or_404(Product, pk=pk).id
-    # bid 모델 변화 반영 후 수정 예정 (여기 부터)
-    bid_list=list(Bid.objects.values())
-    for bid in bid_list:
-        if bid['product_id'] == product_id:
-            global fin_bidder 
-            fin_bidder = bid['bidder']
-            return fin_bidder
-    # 여기 까지
-    user = request.user
-    if fin_bidder == user:
+
+    fin_bid = Bid.objects.filter(product_id=pk).order_by('-bid_price').first()    # Bid 테이블에서의 해당 상품
+    fin_bidder = fin_bid.bidder_id    # 해당 상품의 낙찰자 id
+
+    current_user = request.user
+    if fin_bidder == current_user.id:
         users_bid_result = '입찰에 성공하셨습니다.'
     else:
         users_bid_result = '입찰에 실패하셨습니다.'
@@ -160,20 +158,42 @@ def bid_participation(request, pk):
                     product.present_max_bidder_id = request.user.id
                     product.save()
 
+                    # Bidder 인스턴스 생성 및 저장
+                    bidder = Bidder(
+                        product_id=product,  # 외래키 연결
+                        bidder_id=request.user,  # 현재 로그인한 사용자
+                        bid_price=price  # 입찰 가격
+                    )
+                    bidder.save()  # 데이터베이스에 저장
+                    
                     messages.success(request, '성공적으로 입찰하였습니다.')
+                    return redirect('orders:payment_page', pk=product.pk)   # 결제 페이지로
                 else:
                     messages.error(request, f'입찰 금액은 {product.bid_increment}원 단위로 증가해야 합니다.')
             else:
                 messages.error(request, '최소입찰가보다 더 높은 가격에 입찰하여야합니다.')
         else:
             messages.error(request, '유효한 입찰가를 입력해주세요.')
-
-        return redirect('orders:purchase_history')
     
     context = {
         'product': product
     }
     return render(request, 'orders/bid_participation.html', context)
+
+
+@login_required
+def payment_page(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    context = {
+        'product': product
+    }
+    return render(request, 'orders/payment_page.html', context)
+
+
+@login_required
+def payment_complete(request):
+    return render(request, 'orders/payment_complete.html')
+
 
 
 class ProductListView(ListView):
@@ -204,85 +224,3 @@ class ProductListView(ListView):
         context['category'] = self.kwargs.get('category', 'All')  # 카테고리가 없으면 'All'을 기본값으로 설정
         return context
     
-  
-
-## 결제처리
-## 결제 정보 인증 및 저장 -> 경매 종료일에 최고 입찰가에 한해 사용자 결제정보를 불러와 결제 처리
-
-# a. 결제 정보 입력 및 저장
-# 아임포트 토큰 발급 / 빌링키로 결제정보 저장 / 결제정보입력
-def get_imp_token():      # 토큰 발급
-    url = "https://api.iamport.kr/users/getToken"
-    data = {
-        'imp_key': settings.IAMPORT_API_KEY,
-        'imp_secret': settings.IAMPORT_API_SECRET
-    }
-    response = requests.post(url, data=data)
-    result = response.json()
-    if result['code'] == 0:
-        return result['response']['access_token']
-    else:
-        raise Exception("아임포트 토큰 발급 실패")
-    
-    
-# 결제정보저장 by 빌링키결제 : 서비스 업체의 API를 호출하여 결제 정보를 저장하고, 이 과정에서 인증을 수행
-def save_billing_key(customer_uid, card_number, expiry, birth, pwd_2digit): 
-    token = get_imp_token()
-    url = f"https://api.iamport.kr/subscribe/customers/{customer_uid}"
-    headers = {
-        'Authorization': token
-    }
-    data = {
-        'card_number': card_number,
-        'expiry': expiry,
-        'birth': birth,
-        'pwd_2digit': pwd_2digit
-    }
-    response = requests.post(url, headers=headers, data=data)
-    result = response.json()
-    if result['code'] == 0:
-        return result['response']['customer_uid']
-    else:
-        raise Exception("빌링키 저장 실패")
-
-from .forms import PaymentForm
-@login_required
-def process_payment(request):     # 결제정보 처리
-    if request.method == 'POST':
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            product_id = form.cleaned_data['product_id']
-            bid_amount = form.cleaned_data['bid_amount']
-            card_number = form.cleaned_data['card_number']
-            expiry = form.cleaned_data['expiry']
-            birth = form.cleaned_data['birth']
-            pwd_2digit = form.cleaned_data['pwd_2digit']
-
-            product = get_object_or_404(Product, id=product_id)
-            customer_uid = f"{request.user.id}_{product_id}"
-
-            try:
-                billing_key = save_billing_key(customer_uid, card_number, expiry, birth, pwd_2digit)
-                bidder = Bidder.objects.create(
-                    product_id=product,
-                    bidder_id=request.user,
-                    bid_price=bid_amount,
-                    billing_key=billing_key
-                )
-                messages.success(request, '결제정보가 성공적으로 저장되었습니다.')
-                return redirect('orders:bid_complete', product_id=product.id)
-            except Exception as e:
-                messages.error(request, str(e))
-                return redirect('orders:bid_participation', pk=product.id)
-
-    else:
-        form = PaymentForm()
-
-    return render(request, 'orders/process_payment.html', {'form': form})
-
-
-def bid_complete(request, product_id):      # 입찰 완료 시, 문구
-    product = get_object_or_404(Product, id=product_id)
-    return render(request, 'orders/bid_complete.html', {'product': product})
-
-

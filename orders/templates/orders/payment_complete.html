@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="payment-complete-container">
+    <h1>결제가 완료되었습니다.</h1>
+    <p>입찰에 참여해주셔서 감사합니다!</p>
+    <a href="{% url 'index' %}" class="btn btn-primary">홈으로 가기</a>
+</div>
+{% endblock %}
