@@ -5,6 +5,19 @@ from products.models import Product, Bidder, Bid
 from django.views.generic import ListView
 from django.contrib import messages
 from django.utils import timezone
+from django.http import JsonResponse
+import requests
+from django.conf import settings
+from django.core.mail import send_mail, EmailMultiAlternatives
+import logging
+import os
+import traceback
+from django.views.decorators.csrf import csrf_exempt
+from dotenv import load_dotenv
+load_dotenv()
+
+# 로거 설정
+logger = logging.getLogger(__name__)
 
 #구매 - purchase
 def purchase_history(request):
@@ -33,26 +46,23 @@ def purchase_history(request):
 
 def purchase_history_ing_detail(request, pk):
     product = Product.objects.get(pk=pk)
+    purchase_user = Bidder.objects.filter(product_id=pk, bidder_id=request.user.id).first()   # 사용자 희망 입찰가
     context = {
-        'product' : product
+        'product' : product,
+        'bid_price' : purchase_user.bid_price
     }
     return render(request, 'orders/purchase_history_ing_detail.html', context)
 
-fin_bidder = None
+
 
 def purchase_history_end_detail(request, pk):
     product = Product.objects.get(pk=pk)
-    product_id = get_object_or_404(Product, pk=pk).id
-    # bid 모델 변화 반영 후 수정 예정 (여기 부터)
-    bid_list=list(Bid.objects.values())
-    for bid in bid_list:
-        if bid['product_id'] == product_id:
-            global fin_bidder 
-            fin_bidder = bid['bidder']
-            return fin_bidder
-    # 여기 까지
-    user = request.user
-    if fin_bidder == user:
+
+    fin_bid = Bid.objects.filter(product_id=pk).order_by('-bid_price').first()    # Bid 테이블에서의 해당 상품
+    fin_bidder = fin_bid.bidder_id    # 해당 상품의 낙찰자 id
+
+    current_user = request.user
+    if fin_bidder == current_user.id:
         users_bid_result = '입찰에 성공하셨습니다.'
     else:
         users_bid_result = '입찰에 실패하셨습니다.'
@@ -157,19 +167,32 @@ def bid_participation(request, pk):
                     bidder.save()  # 데이터베이스에 저장
                     
                     messages.success(request, '성공적으로 입찰하였습니다.')
+                    return redirect('orders:payment_page', pk=product.pk)   # 결제 페이지로
                 else:
                     messages.error(request, f'입찰 금액은 {product.bid_increment}원 단위로 증가해야 합니다.')
             else:
                 messages.error(request, '최소입찰가보다 더 높은 가격에 입찰하여야합니다.')
         else:
             messages.error(request, '유효한 입찰가를 입력해주세요.')
-
-        return redirect('orders:purchase_history')
     
     context = {
         'product': product
     }
-    return render(request, 'orders/bid_participation_form.html', context)
+    return render(request, 'orders/bid_participation.html', context)
+
+
+@login_required
+def payment_page(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    context = {
+        'product': product
+    }
+    return render(request, 'orders/payment_page.html', context)
+
+
+@login_required
+def payment_complete(request):
+    return render(request, 'orders/payment_complete.html')
 
 
 
@@ -200,3 +223,4 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         context['category'] = self.kwargs.get('category', 'All')  # 카테고리가 없으면 'All'을 기본값으로 설정
         return context
+    

@@ -17,11 +17,8 @@
     <img src="{{ product.image_url }}" alt="Product Image" id="product_img">
     <p id="category">{{ product.category }}</p>
     <p id="size">{{ product.size }}</p>
-    <p id="start_price">판매자 최소 입찰가: {{ product.min_bid_price }}원</p>
     <p id="start_time">{{ product.auction_start_time }}부터</p>
     <p id="end_time">{{ product.auction_end_time }}까지</p>
-    <p id="present_max_price">현재 최대 입찰가: {{ product.present_max_bid_price }}원</p>
-    <p id="bid_unit">입찰 단위: {{ product.bid_increment }}원</p>
     <p id="description">{{ product.description }}</p>
     <p id="bid_result">{{ users_bid_result }}</p>
 
