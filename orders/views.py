@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
 from products.models import Product, Bidder, Bid
+from api.models import UserAction
 from django.views.generic import ListView
 from django.contrib import messages
 from django.utils import timezone
@@ -165,6 +166,13 @@ def bid_participation(request, pk):
                         bid_price=price  # 입찰 가격
                     )
                     bidder.save()  # 데이터베이스에 저장
+
+                    # 입찰 기록
+                    UserAction.objects.create(
+                        user=request.user,
+                        product=product,
+                        action_type='bid'
+                    )
                     
                     messages.success(request, '성공적으로 입찰하였습니다.')
                     return redirect('orders:payment_page', pk=product.pk)   # 결제 페이지로

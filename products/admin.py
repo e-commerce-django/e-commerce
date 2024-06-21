@@ -2,11 +2,12 @@ from django.contrib import admin
 from django.db import models
 from .models import Product, Bid, Bidder
 from accounts.models import User
+from api.models import UserAction
 from django.forms import IntegerField, TextInput
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'phone_number', 'user_type']
+    list_display = ['id', 'username', 'email', 'phone_number', 'user_type']
     search_fields = ['username', 'email']
     list_filter = ['user_type']
 
@@ -40,3 +41,7 @@ class BidderAdmin(admin.ModelAdmin):
     list_filter = ['bid_time']
     date_hierarchy = 'bid_time'
     raw_id_fields = ['bidder_id', 'product_id']
+
+@admin.register(UserAction)
+class UserActionAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'action_type']

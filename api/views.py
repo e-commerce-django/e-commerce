@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import UserAction
-from .serializers import UserActionSerializer
 from rest_framework import viewsets
 from products.models import Product
 from products.models import Bid
@@ -11,8 +11,8 @@ from .recommendation import get_recommendations
 from .serializers import ProductSerializer, BidSerializer, UserSerializer, UserActionSerializer
 
 @api_view(['GET'])
-def recommend_products(request, product_id):
-    recommendations = get_recommendations(product_id)
+def recommend_products(request, user_id):
+    recommendations = get_recommendations(user_id)
     serializer = ProductSerializer(recommendations, many=True)
     return Response(serializer.data)
 

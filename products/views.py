@@ -8,6 +8,7 @@ from .models import Product
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from api.models import UserAction
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -32,6 +33,18 @@ class ProductDetailView(DetailView):
         context['auction_has_ended'] = current_time > self.object.auction_end_time
         return context
     
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        
+        if request.user.is_authenticated: # 로그인한 사용자의 경우에만 조회 기록 남김
+            UserAction.objects.create(
+                user=self.request.user,
+                product=self.get_object(),
+                action_type='view'
+            )
+        
+        return response
+    
 
 
 # 좋아요 기능
@@ -41,8 +54,16 @@ def product_like_toggle(request, pk):
         product = get_object_or_404(Product, pk=pk)
         if request.user in product.likes.all():
             product.likes.remove(request.user)
+            # 좋아요 취소 시 UserAction 삭제
+            UserAction.objects.filter(user=request.user, product=product, action_type='like').delete()
         else:
             product.likes.add(request.user)
+            # 좋아요 기록
+            UserAction.objects.create(
+                user=request.user,
+                product=product,
+                action_type='like'
+            )
 
     # next 파라미터로 리다이렉트 결정
     next_page = request.POST.get('next', reverse('products:product_detail', kwargs={'pk': pk}))

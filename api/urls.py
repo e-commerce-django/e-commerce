@@ -10,5 +10,5 @@ router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('recommend/<int:product_id>/', recommend_products, name='recommend_products'),
+    path('recommend/<int:user_id>/', recommend_products, name='recommend_products'),
 ]
