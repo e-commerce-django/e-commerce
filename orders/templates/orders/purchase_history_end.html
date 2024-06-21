@@ -4,26 +4,42 @@
         text-decoration-line: none;
         color: inherit;
     }
+
+    .row {
+    width: 1200px; 
+    margin: 0 auto;
+    }
+
+    .food-image {
+    width: 100%; /* 원하는 너비로 설정 */
+    height: 400px; /* 원하는 높이로 설정 */
+    object-fit: cover; /* 이미지를 요소에 맞게 자르거나 늘리도록 설정 */
+    }
+
+    .card-title {
+    height: 50px;
+    }
+
 </style>
 {% if completed_sales %}
-<div class="row">
-  <div class="col-md-6">
-      <div class="row">
-          {% for object in completed_sales %}
-              <div class="col-sm-6 col-md-4 mb-4">
-                  <div class="card">
-                      <a href="{% url 'orders:purchase_history_end_detail' object.id %}">
-                          <img src="{{ object.image_url }}" class="card-img-top food-image" alt="{{ object.name }}">
-                          <div class="card-body row">
-                              <h5 class="card-title">{{ object.name }}</h5>
-                             
-                          </div>
-                      </a>
-                  </div>
-              </div>
-          {% endfor %}
-      </div>
-  </div>
+<div class='row'>
+<div class="col-md-12 text-center">
+    <div class="row">
+        {% for object in completed_sales %}
+            <div class="col-sm-6 col-md-4 mb-4">
+                <div class="card">
+                    <a href="{% url 'orders:purchase_history_end_detail' object.id %}">
+                        <img src="{{ object.image_url }}" class="card-img-top food-image" alt="{{ object.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ object.name }}</h5>
+                            
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 </div>
 {% else %}
     <p>진행이 완료된 상품이 없습니다.</p>
