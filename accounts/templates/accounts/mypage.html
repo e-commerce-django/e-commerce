@@ -17,22 +17,40 @@
         }
         .mypage-container {
             max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 130px auto; /* 컨테이너를 화면 상단에서 약간 내린 위치에 정렬 */
+            padding: 40px;
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        h1, h2 {
+        .section-title {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            margin-top: 30px;
+            font-size: 34px;
+            font-weight: bold; /* 제목을 두껍게 설정 */
+            color: #000; /* 블랙 컬러 */
         }
-        form {
+        .section-title + div {
+            margin-top: 20px;
+        }
+        .section-content {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .section-content p {
+            margin-bottom: 10px;
             text-align: center;
-            margin-top: 10px;
+            font-size: 23px;
         }
-        input[type="submit"],
-        input[type="button"],
+        .section-content form {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .section-content input[type="submit"],
+        .section-content input[type="button"],
         .modal button {
             background-color: #000;
             color: #fff;
@@ -40,27 +58,14 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin: 10px 0;
+            margin: 10px 5px;
             transition: background-color 0.3s;
         }
-        input[type="submit"]:hover,
-        input[type="button"]:hover,
+        .section-content input[type="submit"]:hover,
+        .section-content input[type="button"]:hover,
         .modal button:hover {
             background-color: #333;
         }
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #007bff;
-            transition: color 0.3s;
-        }
-        a:hover {
-            color: #0056b3;
-        }
-    
-        /* 추가된 CSS */
         .modal {
             display: none;
             position: fixed;
@@ -96,39 +101,39 @@
             cursor: pointer;
         }
     </style>
-    
 </head>
 <body>
     <div class="mypage-container">
-        <!-- Section for viewing personal information -->
-        <div style="text-align: center;">
-            <h2>회원 정보</h2>
-            <p>이름: {{ user.username }}</p>
-            <p>이메일: {{ user.email }}</p>
-            <p>주소: {{ user.address }}</p>
-            <p>전화번호: {{ user.phone_number }}</p>
+        <div class="section-title">회원 정보</div>
+        <div class="section-content">
+            <p><strong>이름:</strong> {{ user.username }}</p>
+            <p><strong>이메일:</strong> {{ user.email }}</p>
+            <p><strong>주소:</strong> {{ user.address }}</p>
+            <p><strong>전화번호:</strong> {{ user.phone_number }}</p>
+            <form action="/accounts/mypage/myinfo_modify/" method="post">
+                {% csrf_token %}
+                <input type="submit" value="회원 정보 수정">
+            </form>
         </div>
 
-        <!-- Section for managing user accounts -->
-        <h2>회원 관리</h2>
-        <form action="/accounts/mypage/myinfo_modify/" method="post">
-            {% csrf_token %}
-            <input type="submit" value="회원 정보 수정">
-        </form>
-        <form>
-            <input type="button" value="회원 탈퇴" id="delete-user-btn">
-        </form>
+        <div class="section-title">회원 관리</div>
+        <div class="section-content">
+            <form>
+                <input type="button" value="회원 탈퇴" id="delete-user-btn">
+            </form>
+        </div>
 
-        <!-- Section for managing product history -->
-        <h2>상품 관리 내역</h2>
-        <form action="{% url 'orders:sales_history' %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="판매 내역 보기">
-        </form>
-        <form action="{% url 'orders:purchase_history' %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="구매 내역 보기">
-        </form>
+        <div class="section-title">상품 관리 내역</div>
+        <div class="section-content">
+            <form action="{% url 'orders:sales_history' %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="판매 내역 보기">
+            </form>
+            <form action="{% url 'orders:purchase_history' %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="구매 내역 보기">
+            </form>
+        </div>
     </div>
 
     <!-- 추가된 모달 -->

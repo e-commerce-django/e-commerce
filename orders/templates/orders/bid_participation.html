@@ -5,7 +5,8 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'products/style.css' %}">
 
-<div class="product-detail-container">
+
+<div class="product-detail-container2">
   <div class="product-image">
       <img src="{{ product.image_url }}" alt="Product Image" class="img-fluid">
       {% if product.product_status %}
@@ -16,7 +17,7 @@
   </div>
     {% with current_bid=product.present_max_bid_price|default_if_none:product.min_bid_price %}
     <div class="bid-product-info" data-current-bid="{{ current_bid }}" data-bid-increment="{{ product.bid_increment }}">
-        <div class="info-container">
+        <div class="info-container" style="margin-top: 11px;">
             <div class="info-item">
                 <span class="info-content">{{ product.category }}</span>
             </div>
@@ -41,8 +42,6 @@
         <h1>{{ product.name }}</h1>
         <p>상품 설명: {{ product.description }}</p>
         <p>경매 종료 시간: {{ product.auction_end_time }}</p>
-        <p>현재 입찰가: {{ current_bid }}</p>
-        <p>입찰 단위: {{ product.bid_increment }}</p>
         <form id="bid_form" action="{% url 'orders:bid_participation' product.id %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="product" value="{{ product.id }}">
@@ -63,7 +62,7 @@
                         <button type="button" class="decrement-button" onclick="decrementValue()"></button>
                     </div>
                 </div>
-                <button type="button" onclick="setCustomBid()">입찰</button>
+                <button type="button" class="custom-bid-button" onclick="setCustomBid()">결제하기</button>
             </div>
         </form>
     </div>
@@ -116,6 +115,18 @@
         } else {
             alert('유효한 입찰가를 입력해주세요.');
         }
+    }
+
+    function incrementValue() {
+        var input = document.getElementById('custom_bid_input');
+        var step = parseInt(input.getAttribute('step'), 10);
+        input.value = parseInt(input.value, 10) + step;
+    }
+
+    function decrementValue() {
+        var input = document.getElementById('custom_bid_input');
+        var step = parseInt(input.getAttribute('step'), 10);
+        input.value = parseInt(input.value, 10) - step;
     }
 </script>
 {% endblock %}
