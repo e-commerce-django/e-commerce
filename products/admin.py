@@ -2,17 +2,18 @@ from django.contrib import admin
 from django.db import models
 from .models import Product, Bid, Bidder
 from accounts.models import User
+from api.models import UserAction
 from django.forms import IntegerField, TextInput
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'email', 'phone_number', 'user_type']
+    list_display = ['id', 'username', 'email', 'phone_number', 'user_type']
     search_fields = ['username', 'email']
     list_filter = ['user_type']
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', 'seller', 'name', 'description', 'image_url', 'min_bid_price', 'bid_increment', 'auction_start_time', 'auction_end_time', 'product_status', 'present_max_bid_price', 'present_max_bidder_id', 'category', 'size', 'get_tags']
+    list_display = ['id', 'seller', 'name', 'description', 'image_url', 'min_bid_price', 'bid_increment', 'auction_start_time', 'auction_end_time', 'product_status', 'present_max_bid_price', 'present_max_bidder_id', 'category', 'size', 'tags']
     search_fields = ['name', 'description', 'category']
     list_filter = ['product_status', 'auction_start_time']
     date_hierarchy = 'auction_start_time'
@@ -24,10 +25,6 @@ class ProductAdmin(admin.ModelAdmin):
             kwargs['required'] = False  # 필수가 아닌 필드로 처리
             return db_field.formfield(**kwargs)
         return super().formfield_for_dbfield(db_field, request, **kwargs)
-    
-    def get_tags(self, obj):
-        return obj.tags
-    get_tags.short_description = 'Tags'
 
 @admin.register(Bid)
 class BidAdmin(admin.ModelAdmin):
@@ -44,3 +41,7 @@ class BidderAdmin(admin.ModelAdmin):
     list_filter = ['bid_time']
     date_hierarchy = 'bid_time'
     raw_id_fields = ['bidder_id', 'product_id']
+
+@admin.register(UserAction)
+class UserActionAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'action_type']

@@ -60,7 +60,7 @@
         <div class="col-md-6">
             <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
             {% if field.name == 'tags' %}
-            {{ field|add_class:"form-control tagsinput" }}
+            {{ field|add_class:"form-control" }}
             {% else %}
             {{ field|add_class:"form-control" }}
             {% endif %}
