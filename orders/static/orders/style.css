@@ -1,13 +1,16 @@
+img {
+    object-fit: cover; /* 이미지를 요소에 맞게 자르거나 늘리도록 설정 */
+}
+
 #container {
     position: absolute;
-    margin-left: 400px;
 }
 
 #name {
 /* 상품 이름 */
 position: absolute;
-width: 700px;
-height: 102.71px;
+width: 1000px;
+height: 120px;
 left: 608px;
 top: 245px;
 
@@ -36,7 +39,7 @@ filter: drop-shadow(10px 6px 6px #c3c3c3);
 
 #description{
 position: absolute;
-width: 555px;
+width: 1000px;
 height: 103px;
 left: 608px;
 top: 344.71px;
@@ -56,36 +59,36 @@ color: #696767;
 
 #start_time {
 position: absolute;
-width: 500px;
+width: 600px;
 height: 60px;
 left: 608px;
 top: 448px;
 
 font-family: 'Inter';
 font-style: normal;
-font-weight: 400;
+font-weight: 200;
 font-size: 32px;
 line-height: 39px;
 display: flex;
-align-items: left;
+align-items: center;
 
 color: #000000;
 }
 
 #end_time {
 position: absolute;
-width: 500px;
+width: 600px;
 height: 60px;
-left: 1108px;
-top: 448px;
+left: 608px;
+top: 513px;
 
 font-family: 'Inter';
 font-style: normal;
-font-weight: 400;
+font-weight: 200;
 font-size: 32px;
 line-height: 39px;
 display: flex;
-align-items: left;
+align-items: center;
 
 color: #000000;
 }
@@ -96,7 +99,7 @@ position: absolute;
 width: 500px;
 height: 64px;
 left: 608px;
-top: 513px;
+top: 577px;
 
 font-family: 'Inter';
 font-style: normal;
@@ -115,7 +118,7 @@ position: absolute;
 width: 500px;
 height: 64px;
 left: 608px;
-top: 577px;
+top: 644px;
 
 font-family: 'Inter';
 font-style: normal;
@@ -134,7 +137,7 @@ position: absolute;
 width: 500px;
 height: 64px;
 left: 608px;
-top: 644px;
+top: 708px;
 
 font-family: 'Inter';
 font-style: normal;
@@ -147,10 +150,9 @@ align-items: center;
 color: #000000;
 }
 
-#bid_result, #time-remaining {
-/* 입찰 결과 */
+ #time-remaining {
 position: absolute;
-width: 600px;
+width: 1500px;
 height: 68px;
 left: 100px;
 top: 700px;
@@ -216,12 +218,12 @@ color: #FFFFFF;
 
 }
 
-#form {
+#quit_form {
 position: absolute;
 width: 296px;
 height: 89px;
-left: 1300px;
-top: 700px;
+left: 700px;
+top: 800px;
 
 background: #000000;
 border-radius: 15px;
@@ -238,12 +240,12 @@ justify-content: center;
 color: #FFFFFF;
 }
 
-#quit_form {
+#form {
     position: absolute;
     width: 296px;
     height: 89px;
-    left: 1650px;
-    top: 700px;
+    left: 1030px;
+    top: 800px;
 
     background: #000000;
     border-radius: 15px;
@@ -264,8 +266,8 @@ color: #FFFFFF;
     position: absolute;
     width: 296px;
     height: 89px;
-    left: 1300px;
-    top: 900px;
+    left: 1030px;
+    top: 1100px;
 
     background: #000000;
     border-radius: 15px;
@@ -284,20 +286,59 @@ color: #FFFFFF;
 
 #bid_info #bid_info_detail {
     position: absolute;
-    width: 500px;
+    width: 700px;
     height: 59px;
     left: 608px;
-    top: 770px;
+    top: 860px;
 
     font-family: 'Inter';
     font-style: normal;
-    font-weight: 200;
-    font-size: 36px;
+    font-weight: 400;
+    font-size: 30px;
     line-height: 50px;
     display: flex;
     align-items: center;
     justify-content: left;
 
+    color: #ff0000;
+}
+
+#bid_result {
+    position: absolute;
+    width: 700px;
+    height: 59px;
+    left: 608px;
+    top: 680px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+
+    color: #ff0000;
+}
+
+#bid_info_purchase h3 {
+    /* 낙찰 결과 */
+    position: absolute;
+    width: 700px;
+    height: 102.71px;
+    left: 608px;
+    top: 580px;
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    
     color: #000000;
 }
 
@@ -307,7 +348,7 @@ color: #FFFFFF;
     width: 700px;
     height: 102.71px;
     left: 608px;
-    top: 650px;
+    top: 720px;
     
     font-family: 'Inter';
     font-style: normal;
