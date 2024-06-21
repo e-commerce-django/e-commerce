@@ -63,9 +63,9 @@ def purchase_history_end_detail(request, pk):
 
     current_user = request.user
     if fin_bidder == current_user.id:
-        users_bid_result = '입찰에 성공하셨습니다.'
+        users_bid_result = '축하합니다! 경매에서 성공적으로 낙찰되었습니다.'
     else:
-        users_bid_result = '입찰에 실패하셨습니다.'
+        users_bid_result = '이번에는 아쉽게도 낙찰되지 않았습니다. 다음 경매에서 더 나은 결과를 기대해 보세요!'
     context = {
         'product' : product,
         'users_bid_result' : users_bid_result
