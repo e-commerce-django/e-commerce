@@ -27,6 +27,13 @@ color: #000000;
 
 }
 
+.product-info{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 250px;
+}
+
 #product_img {
 position: absolute;
 width: 450px;
