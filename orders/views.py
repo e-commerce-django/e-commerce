@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
 from products.models import Product, Bidder, Bid
+from api.models import UserAction
 from django.views.generic import ListView
 from django.contrib import messages
 from django.utils import timezone
@@ -63,9 +64,9 @@ def purchase_history_end_detail(request, pk):
 
     current_user = request.user
     if fin_bidder == current_user.id:
-        users_bid_result = '입찰에 성공하셨습니다.'
+        users_bid_result = '축하합니다! 경매에서 성공적으로 낙찰되었습니다.'
     else:
-        users_bid_result = '입찰에 실패하셨습니다.'
+        users_bid_result = '이번에는 아쉽게도 낙찰되지 않았습니다. 다음 경매에서 더 나은 결과를 기대해 보세요!'
     context = {
         'product' : product,
         'users_bid_result' : users_bid_result
@@ -165,6 +166,13 @@ def bid_participation(request, pk):
                         bid_price=price  # 입찰 가격
                     )
                     bidder.save()  # 데이터베이스에 저장
+
+                    # 입찰 기록
+                    UserAction.objects.create(
+                        user=request.user,
+                        product=product,
+                        action_type='bid'
+                    )
                     
                     messages.success(request, '성공적으로 입찰하였습니다.')
                     return redirect('orders:payment_page', pk=product.pk)   # 결제 페이지로
