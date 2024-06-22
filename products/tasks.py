@@ -60,7 +60,7 @@ def get_access_token():
 
 
 # 포트원 빌링키 결제 API 호출 함수
-def process_payment(customer_uid, merchant_uid, amount):
+def process_payment(customer_uid, merchant_uid, product_name, amount):
     try:
         access_token = get_access_token()   
         if not access_token:
@@ -75,7 +75,7 @@ def process_payment(customer_uid, merchant_uid, amount):
         data = {
             "customer_uid": customer_uid,
             "merchant_uid": merchant_uid,
-            "name": "신발 경매 종료 결제",
+            "name": product_name,
             "amount": {
                 "total": amount,
             },
@@ -134,6 +134,7 @@ def update_product_status():
                     success = process_payment(    # 상품 결제
                         customer_uid=bidder.id,  # 사용자의 고유 customer_uid
                         merchant_uid=f"payment-{product.id}",  # 주문 고유 번호
+                        product_name=product.name,
                         amount=product.present_max_bid_price  # 결제할 금액
                     )
                     if success:
