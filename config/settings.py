@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', "0.0.0.0"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', "0.0.0.0", "184.73.104.221"]
 
 
 # Application definition
@@ -221,4 +221,4 @@ channelKey = os.getenv('channelKey')
 
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000', 'http://184.73.104.221:8000', 'https://184.73.104.221:8000']
