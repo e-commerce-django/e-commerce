@@ -48,6 +48,8 @@ class LoginView(View):
 
                 if user is not None:
                     login(request, user)
+                    # print("로그인 성공")
+                    # 로그인 성공 시 추천 결과 생성 및 저장
                     recommendations = get_recommendations(user.id)
                     for recommendation in recommendations:
                         UserRecommendations.objects.create(
@@ -56,8 +58,12 @@ class LoginView(View):
                         )
                     return redirect('/')  
                 else:
+                    # print("비밀번호가 일치하지 않습니다.")
+                    # form.add_error('password', '비밀번호가 일치하지 않습니다.')
                     messages.error(request, '비밀번호가 일치하지 않습니다.')
             except User.DoesNotExist as e:
+                # print(e)
+                # form.add_error('email', '등록되지 않은 이메일입니다.')
                 messages.error(request, '존재하지 않는 이메일입니다.')
         return render(request, 'accounts/login.html', {'form': form})
 
@@ -147,15 +153,18 @@ class EmailVerifyView(View):
         session_verification_code = request.session.get('verification_code')
 
         if verification_code == session_verification_code:
+            # 이메일 인증 성공
             request.session['email_verified'] = True
             return redirect('register')
         else:
+            # 이메일 인증 실패
             messages.error(request, '인증 코드가 일치하지 않습니다.')
             return redirect('send_email')
 
 
 def send_email(request):
     if request.method == "POST":
+        # 랜덤 인증 코드 생성
         verification_code = ''.join(random.choices('0123456789', k=6))
         request.session['verification_code'] = verification_code
 
@@ -163,15 +172,15 @@ def send_email(request):
             "가입 인증 메일",
             f"{verification_code}",
             os.getenv("EMAIL_HOST_ID"),
-            [request.POST.get("email")]
+            [request.POST.get("email")]  # 변경된 부분
         )
 
         try:
             msg.send()
-            return JsonResponse({'message': '이메일이 성공적으로 전송되었습니다.', 'verification_code': verification_code}, status=200) 
+            return JsonResponse({'message': '이메일이 성공적으로 전송되었습니다.', 'verification_code': verification_code}, status=200)  # 변경된 부분
         except Exception as e:
             print(e)
-            return JsonResponse({'error': '이메일 전송 중 오류가 발생했습니다.'}, status=400) 
+            return JsonResponse({'error': '이메일 전송 중 오류가 발생했습니다.'}, status=400)  # 변경된 부분
 
         
 
@@ -183,7 +192,9 @@ def withdraw(request):
             user.is_active = False
             user.save()
             logout(request)
+            # return JsonResponse({'message': '회원 탈퇴가 완료되었습니다.'}, status=200)
             return redirect('/')
         else:
+            # return JsonResponse({'message': '오류가 발생했습니다.'}, status=400)
             return redirect("withdraw/")
         
