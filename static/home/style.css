@@ -23,7 +23,7 @@
 }
 
 /* 인기 상품 섹션과 배너 섹션 간 간격 추가 */
-.popular-products {
+.recommended-products {
     margin-top: 50px;
     margin-bottom: 80px; /* 아래쪽 여백 추가 */
 }

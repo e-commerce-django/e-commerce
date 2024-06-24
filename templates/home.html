@@ -14,11 +14,12 @@
 </section>
 
 <div class="container">
+  {% if request.user.is_authenticated and recommended_products %}
   <!--추천 상품 섹션-->
   <section class="recommended-products" style="margin-top: 60px;">
     <h2 class="category-title">추천 상품</h2>
       <div class="row">
-          {% for product in popular_products|slice:":3" %}
+          {% for product in recommended_products|slice:":3" %}
           <div class="col-md-4 mb-6">
               <div class="card">
                   <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
@@ -32,11 +33,15 @@
       </div>
       <a href="{% url 'orders:auction_page' %}" class="btn more-btn mt-3">더 보기</a>
     </section>
-    
+
     <hr>
-  
+
+
   <!-- 인기 상품 섹션 -->
   <section class="popular-products">
+   {% else %}
+  <section class="popular-products" style="margin-top: 50px; margin-bottom: 80px;">
+    {% endif %}
     <h2 class="category-title">인기 상품</h2>
       <div class="row">
           {% for product in popular_products|slice:":3" %}
@@ -51,7 +56,6 @@
           </div>
           {% endfor %}
       </div>
-      <a href="{% url 'orders:auction_page' %}" class="btn more-btn mt-3">더 보기</a>
   </section>
 
   <hr>
