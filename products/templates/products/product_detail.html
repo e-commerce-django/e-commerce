@@ -22,20 +22,22 @@
             <div class="info-item">
                 <span class="info-content">{{ product.size }}</span>
             </div>
-            <form class="like-item" method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.path }}">
-                <button style="border: 10cap; margin-left: 5px; text-align: right;">
-                    {% if request.user in product.likes.all %}
-                        <i class="far fa-heart" style="color:red; font-size: 30px;"></i>
-                    {% else %}
-                        <i class="fas fa-heart" style="color:white; font-size: 30px;"></i> 
-                    {% endif %}
-                </button>
-                <span class="like-font" style="text-align: right;" >
-                    {{ product.likes.all|length }} 명이 이 상품을 좋아합니다.
-                </span>
-            </form>
+            <div class="like-item">
+              <form method="post" action="{% url 'products:product_like_toggle' pk=product.pk %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button>
+                      {% if request.user in product.likes.all %}
+                          <i class="far fa-heart" style="color:red; font-size: 30px;"></i>
+                      {% else %}
+                          <i class="fas fa-heart" style="color:white; font-size: 30px;"></i> 
+                      {% endif %}
+                  </button>
+              </form>
+              <span class="like-font">
+                  {{ product.likes.all|length }} 명이 이 상품을 좋아합니다.
+              </span>
+          </div>
         </div>
         <h1>{{ product.name }}</h1>
         <p>상품 설명: {{ product.description }}</p>

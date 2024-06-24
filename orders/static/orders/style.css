@@ -3,7 +3,7 @@ img {
 }
 
 #container {
-    position: absolute;
+    position:absolute;
 }
 
 #name {
@@ -32,6 +32,7 @@ color: #000000;
   justify-content: center;
   align-items: center;
   margin-top: 250px;
+  min-height: 1200px;
 }
 
 #product_img {
@@ -272,9 +273,12 @@ color: #FFFFFF;
 #sales_form {
     position: absolute;
     width: 296px;
+    min-width: 200px; /* 버튼 최대 너비 지정 */
+    max-width: 296px;
     height: 89px;
     left: 1030px;
     top: 1100px;
+    display: block;
 
     background: #000000;
     border-radius: 15px;
