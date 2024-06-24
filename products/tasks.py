@@ -253,7 +253,8 @@ def send_winner_email(winner_email, product, hours):
 from celery import shared_task
 import boto3
 import botocore
-@shared_task
+# @shared_task
+@app.task(name="get-model-params-every-day")
 def get_model_params():
 
     s3_uri = os.getenv("S3_MODEL_URI")
