@@ -14,6 +14,8 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from .forms import UserForm, UserLoginForm, UserModifyForm
 from products.models import Bid, Product
 from .models import User
+from api.models import UserRecommendations
+from api.recommendation import get_recommendations
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.conf import settings
 from django.utils.http import urlsafe_base64_decode
@@ -47,6 +49,13 @@ class LoginView(View):
                 if user is not None:
                     login(request, user)
                     # print("로그인 성공")
+                    # 로그인 성공 시 추천 결과 생성 및 저장
+                    recommendations = get_recommendations(user.id)
+                    for recommendation in recommendations:
+                        UserRecommendations.objects.create(
+                            user_id=user.id,
+                            product_id=recommendation.id,
+                        )
                     return redirect('/')  
                 else:
                     # print("비밀번호가 일치하지 않습니다.")
@@ -62,6 +71,7 @@ class LoginView(View):
 class LogoutView(View):
     def get(self, request): 
         if request.user.is_authenticated:
+            UserRecommendations.objects.filter(user_id=request.user.id).delete()
             logout(request)
             return redirect('/') 
         else:
