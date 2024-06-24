@@ -166,3 +166,5 @@ settings.json
 embedding_cache/
 
 bert_model.pth
+
+*.csv
