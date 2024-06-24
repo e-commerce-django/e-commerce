@@ -1,4 +1,4 @@
-from celery import Celery
+from celery import Celery, shared_task
 from celery.schedules import crontab
 from django.utils import timezone
 from .models import Product, Bid
@@ -248,3 +248,31 @@ def send_winner_email(winner_email, product, hours):
     except Exception as e:
         logger.error(f"Failed to send email to {winner_email} for product {product.id}: {e}")
         logger.error(traceback.format_exc())
+
+
+from celery import shared_task
+import boto3
+import botocore
+# @shared_task
+@app.task(name="get-model-params-every-day")
+def get_model_params():
+
+    s3_uri = os.getenv("S3_MODEL_URI")
+
+    bucket_name = s3_uri.split('/')[2]
+    object_key = '/'.join(s3_uri.split('/')[3:])
+
+    local_model_path = '../bert_model.pth'
+
+    session = boto3.Session()
+
+    s3 = session.client('s3')
+
+    try:
+        s3.download_file(bucket_name, object_key, local_model_path)
+        return f"Model downloaded successfully to {local_model_path}."
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "404":
+            return "The object does not exist."
+        else:
+            return "Error occurred: {}".format(e)
