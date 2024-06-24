@@ -24,3 +24,12 @@ class UserAction(models.Model):
     
     class Meta:
         db_table = "useraction"
+
+class RecommendationResult(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    score = models.FloatField()
+    action_type = models.CharField(max_length=10)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    input_data = models.JSONField()  # 입력 데이터
+    label_data = models.JSONField()  # 레이블 데이터

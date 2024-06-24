@@ -1,6 +1,7 @@
 from django.db.models import Count
 from django.shortcuts import render
 from products.models import Product
+from api.recommendation import get_recommendations
 
 def index(request):
     # 경매에 참여한 사람이 많은 상품 순으로 가져오기
@@ -12,4 +13,22 @@ def index(request):
     loafers = Product.objects.filter(category='로퍼', product_status=True)
     sandals = Product.objects.filter(category='샌들', product_status=True)
     slippers = Product.objects.filter(category='슬리퍼', product_status=True)
-    return render(request, 'home.html', {'popular_products': popular_products, 'sneakers': sneakers, 'athletic_shoes': athletic_shoes, 'boots': boots, 'flats': flats, 'loafers': loafers, 'sandals': sandals, 'slippers': slippers})
+
+    # 추천 상품 가져오기
+    if request.user.is_authenticated:
+        recommended_products = get_recommendations(request.user.id)
+    else:
+        recommended_products = []
+
+    context = {
+        'recommended_products': recommended_products,
+        'popular_products': popular_products,
+        'sneakers': sneakers,
+        'athletic_shoes': athletic_shoes,
+        'boots': boots,
+        'flats': flats,
+        'loafers': loafers,
+        'sandals': sandals,
+        'slippers': slippers,
+    }
+    return render(request, 'home.html', context)
