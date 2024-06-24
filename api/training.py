@@ -1,6 +1,8 @@
 import pandas as pd
 from transformers import BertTokenizer, BertModel
 import torch
+import os
+import numpy as np
 
 class ProductDataset(torch.utils.data.Dataset):
     def __init__(self, texts, tokenizer, model):
@@ -25,8 +27,8 @@ class ProductDataset(torch.utils.data.Dataset):
 products_df = pd.read_csv('products.csv')
 user_actions_df = pd.read_csv('user_actions.csv')
 
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertModel.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('huawei-noah/TinyBERT_General_4L_312D')
+model = BertModel.from_pretrained('huawei-noah/TinyBERT_General_4L_312D')
 
 # 입력 데이터 생성 (labels는 dummy로)
 texts = products_df['name'] + " " + products_df['description'] + " " + products_df['category'] + " " + products_df['tags'] + " " + products_df['size'].astype(str)
@@ -60,6 +62,18 @@ for epoch in range(epochs): # 모델 학습 (에포크 수만큼 반복)
 
     print(f"Epoch {epoch}")
 
+
+# 상품 임베딩 캐시 저장
+cache_dir = 'embedding_cache'
+if not os.path.exists(cache_dir):
+    os.makedirs(cache_dir)
+
+for product_id, text in zip(products_df["id"], texts):
+    inputs = tokenizer(text, return_tensors='pt', truncation=True, padding='max_length', max_length=512).to(device)
+    outputs = model(**inputs)
+    embedding = outputs.last_hidden_state.mean(dim=1).squeeze().detach().cpu().numpy()
+    cache_path = os.path.join(cache_dir, f'product_{product_id}.npy')
+    np.save(cache_path, embedding)
 
 # 모델 파라미터 저장
 torch.save(model.state_dict(), 'bert_model.pth')
