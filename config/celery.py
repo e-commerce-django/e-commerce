@@ -17,5 +17,9 @@ app.conf.beat_schedule = {
     'update-status-5-minutes': {
         'task': 'update_product_status',
         'schedule': crontab(minute='*/1'),
+    },
+    'get-model-params-every-day': {
+        'task': 'get_model_params',
+        'schedule': crontab(hour=0, minute=0),
     }
 }
