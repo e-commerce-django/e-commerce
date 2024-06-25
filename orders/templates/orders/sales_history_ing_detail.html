@@ -35,9 +35,9 @@
           <p id="time-remaining">남은 시간: 계산 중...</p>
 
           <!-- 구매 상품 목록으로 돌아가는 버튼 -->
-          <form action="{% url 'orders:purchase_history' %}" method="post">
+          <form action="{% url 'orders:sales_history' %}" method="post">
               {% csrf_token %}
-              <input type="submit" value="구매상품 목록으로" id="form">
+              <input type="submit" value="판매상품 목록으로" id="form">
           </form>
       </div>
   </div>
