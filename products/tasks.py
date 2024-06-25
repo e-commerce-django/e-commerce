@@ -178,27 +178,64 @@ def send_winner_email(winner_email, product, hours):
 from celery import shared_task
 import boto3
 import botocore
-
-# @shared_task
 @app.task(name="get-model-params-every-day")
 def get_model_params():
-
     s3_uri = os.getenv("S3_MODEL_URI")
-
     bucket_name = s3_uri.split('/')[2]
-    object_key = '/'.join(s3_uri.split('/')[3:])
+    prefix = '/'.join(s3_uri.split('/')[3:])
 
-    local_model_path = '../bert_model.pth'
+    local_base_path = '../embedding_cache'
 
     session = boto3.Session()
-
     s3 = session.client('s3')
 
+    if not os.path.exists(local_base_path):
+        os.makedirs(local_base_path)
+
     try:
-        s3.download_file(bucket_name, object_key, local_model_path)
-        return f"Model downloaded successfully to {local_model_path}."
+        response = s3.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+        if 'Contents' not in response:
+            return "No objects found in the specified S3 prefix."
+
+        for obj in response['Contents']:
+            s3_key = obj['Key']
+            relative_path = os.path.relpath(s3_key, prefix)
+            local_file_path = os.path.join(local_base_path, relative_path)
+
+            local_dir = os.path.dirname(local_file_path)
+            if not os.path.exists(local_dir):
+                os.makedirs(local_dir)
+
+            s3.download_file(bucket_name, s3_key, local_file_path)
+            print(f'Downloaded {s3_key} to {local_file_path}')
+
+        return f"All files downloaded successfully to {local_base_path}."
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "404":
             return "The object does not exist."
         else:
-            return "Error occurred: {}".format(e)
+            return f"Error occurred: {e}"
+
+# # @shared_task
+# @app.task(name="get-model-params-every-day")
+# def get_model_params():
+
+#     s3_uri = os.getenv("S3_MODEL_URI")
+
+#     bucket_name = s3_uri.split('/')[2]
+#     object_key = '/'.join(s3_uri.split('/')[3:])
+
+#     local_model_path = '../bert_model.pth'
+
+#     session = boto3.Session()
+
+#     s3 = session.client('s3')
+
+#     try:
+#         s3.download_file(bucket_name, object_key, local_model_path)
+#         return f"Model downloaded successfully to {local_model_path}."
+#     except botocore.exceptions.ClientError as e:
+#         if e.response['Error']['Code'] == "404":
+#             return "The object does not exist."
+#         else:
+#             return "Error occurred: {}".format(e)
