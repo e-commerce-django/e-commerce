@@ -63,18 +63,6 @@ for epoch in range(epochs): # 모델 학습 (에포크 수만큼 반복)
     print(f"Epoch {epoch}")
 
 
-# 상품 임베딩 캐시 저장
-cache_dir = 'embedding_cache'
-if not os.path.exists(cache_dir):
-    os.makedirs(cache_dir)
-
-for product_id, text in zip(products_df["id"], texts):
-    inputs = tokenizer(text, return_tensors='pt', truncation=True, padding='max_length', max_length=512).to(device)
-    outputs = model(**inputs)
-    embedding = outputs.last_hidden_state.mean(dim=1).squeeze().detach().cpu().numpy()
-    cache_path = os.path.join(cache_dir, f'product_{product_id}.npy')
-    np.save(cache_path, embedding)
-
 # 모델 파라미터 저장
 torch.save(model.state_dict(), 'bert_model.pth')
 print("Model saved to bert_model.pth")
