@@ -27,8 +27,8 @@ class ProductDataset(torch.utils.data.Dataset):
 products_df = pd.read_csv('products.csv')
 user_actions_df = pd.read_csv('user_actions.csv')
 
-tokenizer = BertTokenizer.from_pretrained('huawei-noah/TinyBERT_General_4L_312D')
-model = BertModel.from_pretrained('huawei-noah/TinyBERT_General_4L_312D')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
 
 # 입력 데이터 생성 (labels는 dummy로)
 texts = products_df['name'] + " " + products_df['description'] + " " + products_df['category'] + " " + products_df['tags'] + " " + products_df['size'].astype(str)

@@ -9,8 +9,8 @@ import json
 
 class BERTEmbedding:
     def __init__(self):  # 저장된 BERT 모델 로드
-        self.tokenizer = BertTokenizer.from_pretrained('huawei-noah/TinyBERT_General_4L_312D')
-        self.model = BertModel.from_pretrained('huawei-noah/TinyBERT_General_4L_312D')
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.model = BertModel.from_pretrained('bert-base-uncased')
         self.model.load_state_dict(torch.load('bert_model.pth'))
         self.cache_dir = 'embedding_cache'
 
