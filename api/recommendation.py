@@ -55,56 +55,83 @@ class RecommendationSystem:
 
     def get_user_action_products(self, user_id):  # 특정 사용자의 행동 데이터를 바탕으로 관련 상품을 추출
         actions = UserAction.objects.filter(user_id=user_id).select_related('product')
-        return [action.product for action in actions]
+        user_products = [(action.product, self._get_action_weight(action.action_type)) for action in actions]
+        return user_products
+
+    def _get_action_weight(self, action_type):
+        if action_type == 'bid':
+            return 10
+        elif action_type == 'like':
+            return 3
+        elif action_type == 'view':
+            return 1
+        else:
+            return 0
 
     def recommend(self, user_id, top_n=4):
-        user_products = self.get_user_action_products(user_id)
-        if not user_products:
+        user_actions = self.get_user_action_products(user_id)
+        if not user_actions:
             return []
 
-        user_embeddings = self.get_product_embeddings(user_products)  # 사용자가 상호작용한 상품들 추출
-        all_products = Product.objects.all()  # 모든 상품 데이터 추출
-        all_product_embeddings = self.get_product_embeddings(all_products)
+        user_products, action_weights = zip(*user_actions)
+        user_embeddings_tuples = self.get_product_embeddings(user_products)
 
-        user_embedding = sum([embedding for _, embedding in user_embeddings]) / len(user_embeddings)  # 사용자가 상호작용한 상품 임베딩의 평균을 계산(대표 벡터로 사용)
+        # user_embeddings에서 임베딩을 추출하여 numpy 배열로 변환
+        user_embeddings = np.array([embedding for _, embedding in user_embeddings_tuples])
+        action_weights = np.array(action_weights).reshape(-1, 1)  # action_weights의 차원을 맞추기 위해 reshape
 
-        similarities = self._calculate_similarities(user_embedding, all_product_embeddings)  # 계산된 사용자 벡터와 모든 판매 중인 상품의 벡터 사이의 유사도를 계산
+        # 가중합을 구하고 나누기
+        weighted_user_embedding = (user_embeddings * action_weights).sum(axis=0) / action_weights.sum()
+
+        all_products = Product.objects.all()
+        all_product_embeddings_tuples = self.get_product_embeddings(all_products)
+
+        similarities = self._calculate_similarities(weighted_user_embedding, all_product_embeddings_tuples)
 
         # 중복 제거 및 상태 필터링
-        recommended_product_ids = list(dict.fromkeys([product_id for product_id, _ in similarities]))  # 중복 제거
+        recommended_product_ids = []
+        seen_product_ids = set()
+
+        for product_id, _ in similarities:
+            if product_id not in seen_product_ids:
+                recommended_product_ids.append(product_id)
+                seen_product_ids.add(product_id)
+                if len(recommended_product_ids) == top_n:
+                    break
+
         recommended_products = Product.objects.filter(id__in=recommended_product_ids, product_status=True)
 
-        return recommended_products[:top_n]
+        # 추천 결과 저장
+        self.save_recommendation_results(user_id, similarities, user_products, user_embeddings)
+
+        return recommended_products
 
     def _calculate_similarities(self, user_embedding, product_embeddings):
-        similarities = []
-        for product_id, embedding in product_embeddings:  # 각 상품의 벡터와 사용자 벡터 간의 유사도를 계산
-            similarity = cosine_similarity([user_embedding], [embedding])[0][0]
-            similarities.append((product_id, similarity))
-        similarities.sort(key=lambda x: x[1], reverse=True)  # 튜플로 저장
+        similarities = [(product_id, cosine_similarity([user_embedding], [embedding])[0][0]) for product_id, embedding in product_embeddings]
+        similarities.sort(key=lambda x: x[1], reverse=True)
         return similarities
-    
+
     def save_recommendation_results(self, user_id, similarities, user_products, user_embeddings):
         for product_id, score in similarities:
             input_data = {
                 "user_id": user_id,
-                "user_embeddings": [embedding.tolist() for _, embedding in user_embeddings],
+                "user_embeddings": [embedding.tolist() for embedding in user_embeddings],
                 "user_products": [product.id for product in user_products],
             }
             label_data = {
                 "recommended_product_id": product_id,
-                "score": float(score)  # float 형으로 변환
+                "score": float(score)
             }
             RecommendationResult.objects.create(
                 user_id=user_id,
                 product_id=product_id,
                 score=score,
-                action_type='recommend',  # 추천을 의미하는 새로운 액션 타입
+                action_type='recommend',
                 input_data=json.dumps(input_data, default=self._convert_to_serializable),
                 label_data=json.dumps(label_data, default=self._convert_to_serializable)
             )
 
-    def _convert_to_serializable(self, obj):  # float32 유형의 데이터를 직렬화
+    def _convert_to_serializable(self, obj):
         if isinstance(obj, (np.float32, np.float64)):
             return float(obj)
         if isinstance(obj, (np.ndarray,)):
