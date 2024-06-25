@@ -20,6 +20,7 @@ app.conf.beat_schedule = {
     },
     'get-model-params-every-day': {
         'task': 'get_model_params',
-        'schedule': crontab(hour=0, minute=0),
+        # 'schedule': crontab(hour=0, minute=0),
+        'schedule': crontab(minute='*/1'),
     }
 }
